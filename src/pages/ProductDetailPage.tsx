@@ -325,13 +325,15 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
               </div>
 
               <div className="flex gap-3 mb-4">
-                <button
-                  onClick={handleAddToCart}
-                  className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
-                >
-                  <ShoppingCart size={24} />
-                  Add to Cart
-                </button>
+                {(!appliedCoupon || (appliedCoupon && appliedCoupon.discount < 100)) && (
+                  <button
+                    onClick={handleAddToCart}
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
+                  >
+                    <ShoppingCart size={24} />
+                    Add to Cart
+                  </button>
+                )}
 
                 {!downloadLink && appliedCoupon && appliedCoupon.discount === 100 && (
                   <button
@@ -343,16 +345,6 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
                   </button>
                 )}
 
-                {!downloadLink && (!appliedCoupon || (appliedCoupon && appliedCoupon.discount < 100)) && (
-                  <button
-                    onClick={handleBuyNow}
-                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
-                  >
-                    <MessageCircle size={24} />
-                    Buy Now
-                  </button>
-                )}
-              </div>
 
               <div className="mb-6">
                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Rate this product:</p>
