@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import cors from "cors";
 import multer from "multer";
 import { exec } from "child_process";
+import chokidar from "chokidar"; // 👈 Added for watching all files
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,19 +45,20 @@ const defaultProducts = [
   },
 ];
 
+// If products.json doesn’t exist, create it
 if (!fs.existsSync(productsPath)) {
   fs.writeFileSync(productsPath, JSON.stringify(defaultProducts, null, 2));
   console.log("✅ Created default products.json");
 }
 
-// 🧩 Helper: Push changes to GitHub automatically (optional)
+// 🧩 Helper: Push changes to GitHub automatically
 function pushChangesToGitHub(commitMessage = "Auto update from server") {
   exec(
     `git add -A && git commit -m "${commitMessage}" && git push`,
     { env: { ...process.env, GIT_ASKPASS: "echo" } },
     (err, stdout, stderr) => {
       if (err) {
-        console.error("Git push error:", stderr || err);
+        console.error("❌ Git push error:", stderr || err);
         return;
       }
       console.log("✅ Git push successful:\n", stdout);
@@ -64,7 +66,7 @@ function pushChangesToGitHub(commitMessage = "Auto update from server") {
   );
 }
 
-// 🖼 Multer config for image uploads
+// 🖼 Multer config for image uploads (random number filename)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const dir = path.join(__dirname, "public/images");
@@ -73,11 +75,8 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    const customName = req.body.customName?.trim();
-    const filename = customName
-      ? `${customName}${ext}`
-      : `${Date.now()}-${Math.floor(Math.random() * 1e9)}${ext}`;
-    cb(null, filename);
+    const randomName = `${Date.now()}-${Math.floor(Math.random() * 1e9)}${ext}`;
+    cb(null, randomName);
   },
 });
 
@@ -110,7 +109,7 @@ app.post("/api/products", (req, res) => {
     const updatedProducts = req.body;
     fs.writeFileSync(productsPath, JSON.stringify(updatedProducts, null, 2));
     console.log("✅ Products updated successfully");
-    // pushChangesToGitHub("Auto update products"); // optional
+    pushChangesToGitHub("🛍 Updated products from admin panel");
     res.json({ success: true });
   } catch (err) {
     console.error("Error updating products:", err);
@@ -121,17 +120,39 @@ app.post("/api/products", (req, res) => {
 // 🖼 Upload single image
 app.post("/api/upload-image", upload.single("image"), (req, res) => {
   try {
-    if (!req.file)
-      return res.status(400).json({ error: "No image uploaded" });
+    if (!req.file) return res.status(400).json({ error: "No image uploaded" });
 
     const imageUrl = `/images/${req.file.filename}`;
     console.log("📸 Uploaded:", imageUrl);
+    pushChangesToGitHub(`🖼 Uploaded new image: ${req.file.filename}`);
     res.json({ imageUrl });
   } catch (err) {
     console.error("Image upload failed:", err);
     res.status(500).json({ error: "Image upload failed" });
   }
 });
+
+// 👀 Watch ALL project files for any changes and auto-push
+const watcher = chokidar.watch(__dirname, {
+  ignored: /(^|[\/\\])\..|node_modules|\.git/, // ignore hidden + node_modules + .git
+  persistent: true,
+  ignoreInitial: true,
+});
+
+watcher.on("change", (filePath) => {
+  console.log(`🔄 File changed: ${filePath}`);
+  pushChangesToGitHub(`🌀 Auto commit: ${path.basename(filePath)}`);
+});
+watcher.on("add", (filePath) => {
+  console.log(`➕ File added: ${filePath}`);
+  pushChangesToGitHub(`📄 New file added: ${path.basename(filePath)}`);
+});
+watcher.on("unlink", (filePath) => {
+  console.log(`❌ File deleted: ${filePath}`);
+  pushChangesToGitHub(`🗑 File deleted: ${path.basename(filePath)}`);
+});
+
+console.log("👀 Watching ALL project folders for changes...");
 
 // 🌍 Start server
 const PORT = process.env.PORT || 5000;
