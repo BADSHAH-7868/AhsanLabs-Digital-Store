@@ -333,7 +333,7 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
                     className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
                   >
                     <ShoppingCart size={24} />
-                    Add to Car
+                    Add to Cart
                   </button>
 
                   {!downloadLink && appliedCoupon && appliedCoupon.discount === 100 && (
