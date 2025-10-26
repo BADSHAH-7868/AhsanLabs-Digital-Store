@@ -64,7 +64,7 @@
   {
     "id": "3",
     "name": "Overlay Pack",
-    "description": "CapCut Premium: Create stunning videos with advanced editing tools, AI effects, Whisk Animate, rich audio enhancements, dynamic templates and transitions, text & sticker tools, multi-track editing, and easy social media sharing.",
+    "description": "Level up your streams with animated overlays, custom HUDs, alerts, webcam frames, chat boxes, and fully customizable theme packs to make your content stand out.",
     "price": 699.99,
     "originalPrice": 1299.99,
     "image": "/images/1761509561367-760151661.png",
@@ -72,14 +72,12 @@
     "rating": 130,
     "reviews": 250,
     "features": [
-      "Advanced video editing",
-      "AI-powered effects",
-      "Whisk Animate",
-      "audio enhancements",
-      "templates & transitions",
-      "text & sticker tools",
-      "multi-track editing",
-      "and seamless social media export."
+      "Customizable HUDs",
+      "animated overlays",
+      "alerts & notifications",
+      "webcam frames",
+      "chat boxes",
+      "and theme packs for streamers and content creators."
     ],
     "offerEndsAt": "",
     "inStock": true,
