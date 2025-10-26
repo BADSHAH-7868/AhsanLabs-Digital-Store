@@ -374,8 +374,29 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
             onComplete={() => {
               setTimeout(() => {
                 setShowScratchCard(false);
-                setCouponCode(product.scratch_coupon || `SCRATCH${product.scratch_disc}`);
-                applyCoupon();
+                const coupon = product.scratch_coupon || `SCRATCH${product.scratch_disc}`;
+                setCouponCode(coupon);
+                setCouponError('');
+                // Auto apply the scratch coupon
+                const couponObj = COUPONS.find((c) => c.code.toLowerCase() === coupon.toLowerCase()) ||
+                  (product.specialcode?.toLowerCase() === coupon.toLowerCase() && product.specialdisc ? { code: product.specialcode, discount: product.specialdisc, type: 'percentage' } : null) ||
+                  (product.is_scratch && product.scratch_coupon?.toLowerCase() === coupon.toLowerCase() && product.scratch_disc ? { code: product.scratch_coupon, discount: product.scratch_disc, type: 'percentage' } : null);
+                if (couponObj && !appliedCoupon) {
+                  setAppliedCoupon(couponObj);
+                  const discount = couponObj.type === 'percentage' ? (product.price * couponObj.discount) / 100 : couponObj.discount;
+                  const newFinalPrice = product.price - discount;
+                  setFinalPrice(newFinalPrice);
+                  if (couponObj.discount === 100) {
+                    setDownloadLink(product.productlink);
+                    setDiscountMessage(`Congratulations! You've applied a 100% discount with code ${couponObj.code} for ${product.name}.`);
+                  } else {
+                    setDownloadLink('');
+                    setDiscountMessage(`Congratulations! You've got a ${couponObj.discount}% discount with scratch coupon ${couponObj.code}. Original price: PKR ${product.originalPrice.toFixed(2)}, Final price: PKR ${newFinalPrice.toFixed(2)}. I want to buy ${product.name}!`);
+                  }
+                  setShowConfetti(true);
+                } else if (!appliedCoupon) {
+                  setCouponError('Invalid coupon code');
+                }
               }, 1000);
             }}
           />
