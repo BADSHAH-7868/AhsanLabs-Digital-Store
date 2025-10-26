@@ -397,4 +397,4 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
       </Modal>
     </div>
   );
-};
+}
