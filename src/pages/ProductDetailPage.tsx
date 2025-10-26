@@ -51,6 +51,9 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
           setProduct(updatedProduct);
           setFinalPrice(updatedProduct.price);
           setUserRating(getRating(productId));
+          if (updatedProduct.price === 0) {
+            setDownloadLink("example.com");
+          }
         } else {
           setError(`Product with ID ${productId} not found`);
         }
@@ -299,13 +302,6 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
                         Reveal Secret Discount
                       </button>
                     )}
-                  </div>
-                )}
-
-                {product.price === 0 && (
-                  <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <p className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">Product Link:</p>
-                    <a href={product.productlink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{product.productlink}</a>
                   </div>
                 )}
 
