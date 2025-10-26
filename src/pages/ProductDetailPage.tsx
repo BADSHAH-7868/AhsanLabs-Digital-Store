@@ -348,6 +348,13 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
                 {!downloadLink && (!appliedCoupon || (appliedCoupon && appliedCoupon.discount < 100)) && (
                   <button
                     onClick={handleBuyNow}
+                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
+                  >
+                    <MessageCircle size={24} />
+                    Buy Now
+                  </button>
+                )}
+              </div>
 
               <div className="mb-6">
                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Rate this product:</p>
