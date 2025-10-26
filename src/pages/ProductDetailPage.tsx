@@ -1,4 +1,4 @@
-t show add to cartimport { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Product, Coupon, CartItem } from '../types/product';
 import { Rating } from '../components/Rating';
 import { CountdownTimer } from '../components/CountdownTimer';
