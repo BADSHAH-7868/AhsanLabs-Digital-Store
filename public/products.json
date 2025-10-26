@@ -98,8 +98,8 @@
     "originalPrice": 1999.99,
     "image": "/images/rdp.jpg",
     "category": "Methods",
-    "rating": 0,
-    "reviews": 0,
+    "rating": 500,
+    "reviews": 200,
     "features": [
       "Free Windows 11 RDP access",
       "high-speed internet up to 2 Gbps",
@@ -109,9 +109,9 @@
       "6-hour runtime",
       "unlimited reuse method."
     ],
-    "offerEndsAt": "2027-10-27T07:45",
+    "offerEndsAt": "2027-10-27T12:45",
     "inStock": true,
-    "whatsappNumber": "",
+    "whatsappNumber": "923343925359",
     "whatsappMessage": "",
     "productlink": "https://whatsapp.com/channel/0029Vb6cRL43GJOqdGUq4q0Q/1126",
     "is_scratch": false,
