@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Product } from '../types/product';
 import { Rating } from '../components/Rating';
+import { Filter, GitCompare, Search, X, Home } from 'lucide-react';
+import { addToComparison, getComparisonList } from '../utils/localStorage';
 
 interface ProductsPageProps {
   onProductClick: (productId: string) => void;
