@@ -90,6 +90,15 @@ export const ProductsPage = ({ onProductClick }: ProductsPageProps) => {
     <div className="min-h-screen pt-24 pb-12 px-4 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <button
+              onClick={() => window.location.href = '/'}
+              className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
+              <Home size={20} />
+              <span>Home</span>
+            </button>
+          </div>
           <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">All Products</h1>
           <p className="text-gray-600 dark:text-gray-400">Browse our complete collection of digital products</p>
         </div>
