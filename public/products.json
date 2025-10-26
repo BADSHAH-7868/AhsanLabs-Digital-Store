@@ -57,5 +57,27 @@
     "is_scratch": false,
     "scratch_disc": 100,
     "scratch_coupon": "scratche"
+  },
+  {
+    "id": "3",
+    "name": "overlay",
+    "description": "",
+    "price": 300,
+    "originalPrice": 0,
+    "image": "",
+    "category": "editing",
+    "rating": 0,
+    "reviews": 0,
+    "features": [],
+    "offerEndsAt": "",
+    "inStock": true,
+    "whatsappNumber": "",
+    "whatsappMessage": "",
+    "productlink": "",
+    "is_scratch": false,
+    "scratch_disc": 0,
+    "specialcode": "",
+    "specialdisc": 0,
+    "scratch_coupon": ""
   }
 ]
