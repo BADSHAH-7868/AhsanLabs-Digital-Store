@@ -52,7 +52,7 @@ if (!fs.existsSync(productsPath)) {
 // GitHub push function
 function pushChangesToGitHub(commitMessage = 'Auto update from server') {
   exec(
-    `git add . && git commit -m "${commitMessage}" && git push`,
+    `git add -A && git commit -m "${commitMessage}" && git push`,
     { env: { ...process.env, GIT_ASKPASS: 'echo' } },
     (err, stdout, stderr) => {
       if (err) {
@@ -64,7 +64,7 @@ function pushChangesToGitHub(commitMessage = 'Auto update from server') {
   );
 }
 
-// Multer config for image uploads
+// Multer config for image uploads (random numeric filenames)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const dir = path.join(__dirname, 'public/images');
@@ -72,14 +72,9 @@ const storage = multer.diskStorage({
     cb(null, dir);
   },
   filename: (req, file, cb) => {
-    const customName = req.body.customName;
-    if (customName) {
-      const ext = path.extname(file.originalname);
-      const sanitized = customName.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9-_]/g, '');
-      cb(null, sanitized + ext);
-    } else {
-      cb(null, Date.now() + '-' + Math.round(Math.random() * 1e9) + path.extname(file.originalname));
-    }
+    const ext = path.extname(file.originalname);
+    const randomName = Date.now() + '-' + Math.floor(Math.random() * 1e9) + ext;
+    cb(null, randomName);
   }
 });
 
@@ -125,10 +120,10 @@ app.post('/api/upload-image', upload.single('image'), (req, res) => {
   res.json({ imageUrl: `/images/${req.file.filename}` });
 });
 
-// File watcher for **any file changes**
-const watcher = chokidar.watch(__dirname, { ignored: /node_modules|\.git/, persistent: true });
-watcher.on('change', (filePath) => {
-  console.log(`🔄 File changed: ${filePath}`);
+// File watcher for images folder (auto Git push on add/change/unlink/rename)
+const watcher = chokidar.watch(path.join(__dirname, 'public/images'), { persistent: true });
+watcher.on('all', (event, filePath) => {
+  console.log(`🔄 Event: ${event} on ${filePath}`);
   pushChangesToGitHub(`Auto update: ${path.basename(filePath)}`);
 });
 
