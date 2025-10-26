@@ -6,7 +6,7 @@ import { ShareButtons } from '../components/ShareButtons';
 import { Modal } from '../components/Modal';
 import { ScratchCard } from '../components/ScratchCard';
 import { Confetti } from '../components/Confetti';
-import { ArrowLeft, Check, Copy, MessageCircle, ShoppingCart, Home } from 'lucide-react';
+import { ArrowLeft, Check, Copy, MessageCircle, ShoppingCart } from 'lucide-react';
 import { getRating, saveRating, addToCart, getCart } from '../utils/localStorage';
 
 interface ProductDetailPageProps {
@@ -184,22 +184,13 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
       <Confetti active={showConfetti} onComplete={() => setShowConfetti(false)} />
 
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-4 mb-6">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-          >
-            <ArrowLeft size={20} />
-            <span>Back to Products</span>
-          </button>
-          <button
-            onClick={() => window.location.href = '/'}
-            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-          >
-            <Home size={20} />
-            <span>Home</span>
-          </button>
-        </div>
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition-colors"
+        >
+          <ArrowLeft size={20} />
+          <span>Back to Products</span>
+        </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           <div className="space-y-6">
@@ -347,27 +338,6 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
                     </button>
                   )}
 
-                  {!downloadLink && appliedCoupon && appliedCoupon.discount === 100 && (
-                    <button
-                      onClick={handleBuyNow}
-                      className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
-                    >
-                      <MessageCircle size={24} />
-                      Get Free Download
-                    </button>
-                  )}
-
-                  {!downloadLink && (!appliedCoupon || (appliedCoupon && appliedCoupon.discount < 100)) && (
-                    <button
-                      onClick={handleBuyNow}
-                      className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
-                    >
-                      <MessageCircle size={24} />
-                      Buy Now
-                    </button>
-                  )}
-                </div>
-              )}
 
               <div className="mb-6">
                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Rate this product:</p>
