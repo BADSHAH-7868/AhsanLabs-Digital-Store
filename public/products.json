@@ -79,16 +79,16 @@
       "chat boxes",
       "and theme packs for streamers and content creators."
     ],
-    "offerEndsAt": "2026-06-27T06:25",
+    "offerEndsAt": "2026-06-27T11:25",
     "inStock": true,
     "whatsappNumber": "923343926359",
     "whatsappMessage": "Hi i am intersted in your Overlay Pack",
     "productlink": "",
-    "is_scratch": false,
-    "scratch_disc": 0,
-    "specialcode": "OVERLAY-DISC-2025",
-    "specialdisc": 30,
-    "scratch_coupon": ""
+    "is_scratch": true,
+    "scratch_disc": 30,
+    "specialcode": "",
+    "specialdisc": 0,
+    "scratch_coupon": "OVERLAY-DISC-30"
   },
   {
     "id": "4",
