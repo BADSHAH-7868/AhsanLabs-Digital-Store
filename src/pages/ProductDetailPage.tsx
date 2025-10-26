@@ -50,9 +50,6 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
           setProduct(found);
           setFinalPrice(found.price);
           setUserRating(getRating(productId));
-          if (found.price === 0) {
-            setDownloadLink(found.productlink);
-          }
         } else {
           setError(`Product with ID ${productId} not found`);
         }
@@ -272,7 +269,7 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
                   </div>
                 )}
 
-                {!appliedCoupon && product.price !== 0 && (
+                {!appliedCoupon && (
                   <div className="space-y-3">
                     <div className="flex flex-col sm:flex-row gap-2">
                       <input
@@ -326,18 +323,35 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
                 )}
               </div>
 
-              {product.price !== 0 && (
-                <div className="flex gap-3 mb-4">
-                  {(!appliedCoupon || (appliedCoupon && appliedCoupon.discount < 100)) && (
-                    <button
-                      onClick={handleAddToCart}
-                      className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
-                    >
-                      <ShoppingCart size={24} />
-                      Add to Cart
-                    </button>
-                  )}
+              <div className="flex gap-3 mb-4">
+                <button
+                  onClick={handleAddToCart}
+                  className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
+                >
+                  <ShoppingCart size={24} />
+                  Add to Cart
+                </button>
 
+                {!downloadLink && appliedCoupon && appliedCoupon.discount === 100 && (
+                  <button
+                    onClick={handleBuyNow}
+                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
+                  >
+                    <MessageCircle size={24} />
+                    Get Free Download
+                  </button>
+                )}
+
+                {!downloadLink && (!appliedCoupon || (appliedCoupon && appliedCoupon.discount < 100)) && (
+                  <button
+                    onClick={handleBuyNow}
+                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
+                  >
+                    <MessageCircle size={24} />
+                    Buy Now
+                  </button>
+                )}
+              </div>
 
               <div className="mb-6">
                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Rate this product:</p>
@@ -361,7 +375,7 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
               setTimeout(() => {
                 setShowScratchCard(false);
                 setCouponCode(product.scratch_coupon || `SCRATCH${product.scratch_disc}`);
-                setCouponError('');
+                applyCoupon();
               }, 1000);
             }}
           />
