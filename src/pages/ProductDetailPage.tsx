@@ -184,13 +184,22 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
       <Confetti active={showConfetti} onComplete={() => setShowConfetti(false)} />
 
       <div className="max-w-7xl mx-auto">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition-colors"
-        >
-          <ArrowLeft size={20} />
-          <span>Back to Products</span>
-        </button>
+        <div className="flex items-center gap-4 mb-6">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+          >
+            <ArrowLeft size={20} />
+            <span>Back to Products</span>
+          </button>
+          <button
+            onClick={() => window.location.href = '/'}
+            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+          >
+            <Home size={20} />
+            <span>Home</span>
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           <div className="space-y-6">
