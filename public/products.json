@@ -57,27 +57,5 @@
     "is_scratch": false,
     "scratch_disc": 100,
     "scratch_coupon": "scratche"
-  },
-  {
-    "id": "3",
-    "name": "Overlay",
-    "description": "",
-    "price": 699.99,
-    "originalPrice": 1299.99,
-    "image": "/images/overlay.png",
-    "category": "Editing",
-    "rating": 0,
-    "reviews": 0,
-    "features": [],
-    "offerEndsAt": "",
-    "inStock": true,
-    "whatsappNumber": "923343926359",
-    "whatsappMessage": "",
-    "productlink": "",
-    "is_scratch": false,
-    "scratch_disc": 0,
-    "specialcode": "",
-    "specialdisc": 0,
-    "scratch_coupon": ""
   }
 ]
