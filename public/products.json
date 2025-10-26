@@ -89,5 +89,27 @@
     "specialcode": "OVERLAY-DISC-2025",
     "specialdisc": 30,
     "scratch_coupon": ""
+  },
+  {
+    "id": "4",
+    "name": "Win 11 - RDP",
+    "description": "",
+    "price": 0,
+    "originalPrice": 1999.99,
+    "image": "/images/rdp.jpg",
+    "category": "Methods",
+    "rating": 0,
+    "reviews": 0,
+    "features": [],
+    "offerEndsAt": "",
+    "inStock": true,
+    "whatsappNumber": "",
+    "whatsappMessage": "",
+    "productlink": "",
+    "is_scratch": false,
+    "scratch_disc": 0,
+    "specialcode": "",
+    "specialdisc": 0,
+    "scratch_coupon": ""
   }
 ]
