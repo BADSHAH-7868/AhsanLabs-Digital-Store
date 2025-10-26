@@ -15,9 +15,9 @@ interface ProductDetailPageProps {
 }
 
 const COUPONS: Coupon[] = [
-  { code: 'AHSANLABSMEGA', discount: 100, type: 'percentage' },
+  { code: 'AHSANLABSMEGA', discount: 15, type: 'percentage' },
   { code: 'WELCOME10', discount: 10, type: 'percentage' },
-  { code: 'MEGA50', discount: 50, type: 'percentage' },
+  { code: 'MEGA50', discount: 20, type: 'percentage' },
 ];
 
 export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps) => {

@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 import multer from 'multer';
 import { exec } from 'child_process';
+import chokidar from 'chokidar';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,12 +13,36 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
-const productsPath = path.join(__dirname, 'public', 'products.json');
+const productsPath = path.join(__dirname, 'public/products.json');
 
+// Default products (agar file nahi hai)
 const defaultProducts = [
-  // ... yahan tumhara default products JSON array ...
+  {
+    id: "1",
+    name: "Premium Digital Course",
+    description: "Master the fundamentals with our comprehensive digital course.",
+    price: 149.99,
+    originalPrice: 1000,
+    image: "/images/capcut.png",
+    category: "Education",
+    rating: 4.8,
+    reviews: 234,
+    inStock: true,
+  },
+  {
+    id: "2",
+    name: "Pro Design Templates Pack",
+    description: "100+ professional templates for your business.",
+    price: 49.99,
+    originalPrice: 149.99,
+    image: "/images/ap.png",
+    category: "Design",
+    rating: 4.9,
+    reviews: 567,
+    inStock: true,
+  }
 ];
 
 if (!fs.existsSync(productsPath)) {
@@ -25,7 +50,7 @@ if (!fs.existsSync(productsPath)) {
 }
 
 // GitHub push function
-function pushChangesToGitHub(commitMessage = 'Update products and images') {
+function pushChangesToGitHub(commitMessage = 'Auto update from server') {
   exec(
     `git add . && git commit -m "${commitMessage}" && git push`,
     { env: { ...process.env, GIT_ASKPASS: 'echo' } },
@@ -39,12 +64,12 @@ function pushChangesToGitHub(commitMessage = 'Update products and images') {
   );
 }
 
-// Multer config
+// Multer config for image uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, 'public', 'images');
-    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-    cb(null, uploadDir);
+    const dir = path.join(__dirname, 'public/images');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
   },
   filename: (req, file, cb) => {
     const customName = req.body.customName;
@@ -67,7 +92,7 @@ const upload = multer({
   }
 });
 
-// GET products
+// API: GET products
 app.get('/api/products', (req, res) => {
   try {
     const data = fs.readFileSync(productsPath, 'utf-8');
@@ -78,7 +103,7 @@ app.get('/api/products', (req, res) => {
   }
 });
 
-// POST updated products
+// API: POST update products
 app.post('/api/products', (req, res) => {
   try {
     const updated = req.body;
@@ -92,12 +117,19 @@ app.post('/api/products', (req, res) => {
   }
 });
 
-// POST upload image
+// API: POST upload image
 app.post('/api/upload-image', upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
   console.log('🖼 Image uploaded:', req.file.filename);
   pushChangesToGitHub(`Upload image ${req.file.filename}`);
   res.json({ imageUrl: `/images/${req.file.filename}` });
+});
+
+// File watcher for **any file changes**
+const watcher = chokidar.watch(__dirname, { ignored: /node_modules|\.git/, persistent: true });
+watcher.on('change', (filePath) => {
+  console.log(`🔄 File changed: ${filePath}`);
+  pushChangesToGitHub(`Auto update: ${path.basename(filePath)}`);
 });
 
 app.listen(5000, () => console.log('🚀 Server running on http://localhost:5000'));
