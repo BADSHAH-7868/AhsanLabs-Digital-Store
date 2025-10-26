@@ -6,7 +6,7 @@ import { ShareButtons } from '../components/ShareButtons';
 import { Modal } from '../components/Modal';
 import { ScratchCard } from '../components/ScratchCard';
 import { Confetti } from '../components/Confetti';
-import { ArrowLeft, Check, Copy, MessageCircle, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, Check, Copy, MessageCircle, ShoppingCart, Home } from 'lucide-react';
 import { getRating, saveRating, addToCart, getCart } from '../utils/localStorage';
 
 interface ProductDetailPageProps {
