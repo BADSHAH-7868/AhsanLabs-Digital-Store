@@ -380,7 +380,6 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
               setTimeout(() => {
                 setShowScratchCard(false);
                 setCouponCode(product.scratch_coupon || `SCRATCH${product.scratch_disc}`);
-                applyCoupon();
               }, 1000);
             }}
           />
