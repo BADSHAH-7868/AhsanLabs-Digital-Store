@@ -345,6 +345,9 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
                   </button>
                 )}
 
+                {!downloadLink && (!appliedCoupon || (appliedCoupon && appliedCoupon.discount < 100)) && (
+                  <button
+                    onClick={handleBuyNow}
 
               <div className="mb-6">
                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Rate this product:</p>
