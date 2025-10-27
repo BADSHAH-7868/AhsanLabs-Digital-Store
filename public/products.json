@@ -50,14 +50,14 @@
       "2 TB storage",
       "plus premium benefits and discounts."
     ],
-    "offerEndsAt": "2025-11-06T18:00",
+    "offerEndsAt": "2025-11-07T00:00",
     "inStock": true,
     "whatsappNumber": "1234567890",
     "whatsappMessage": "Hi i want to buy Unlimited Gmail Method",
     "productlink": "",
-    "is_scratch": false,
-    "scratch_disc": 0,
-    "scratch_coupon": "",
+    "is_scratch": true,
+    "scratch_disc": 20,
+    "scratch_coupon": "GMAIL-DISC-LABS-25",
     "specialcode": "GEMINI-DISC99",
     "specialdisc": 20
   },
@@ -121,7 +121,7 @@
     "scratch_coupon": "FREE-FOR-YOU"
   },
   {
-    "id": "5",
+    "id": "4",
     "name": "Capcut Pro Working Apk",
     "description": "CapCut Premium: Create stunning videos with advanced editing tools, AI effects, Whisk Animate, rich audio enhancements, dynamic templates and transitions, text & sticker tools, multi-track editing, and easy social media sharing.",
     "price": 149.99,
