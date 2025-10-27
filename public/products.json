@@ -90,5 +90,35 @@
     "specialdisc": 0,
     "scratch_coupon": "FREE-FOR-YOU"
   },
-  
+  {
+    "id": "2",
+    "name": "Capcut Pro Working Apk",
+    "description": "CapCut Premium: Create stunning videos with advanced editing tools, AI effects, Whisk Animate, rich audio enhancements, dynamic templates and transitions, text & sticker tools, multi-track editing, and easy social media sharing.",
+    "price": 149.99,
+    "originalPrice": 249.99,
+    "image": "/images/capcut.png",
+    "category": "Editing",
+    "rating": 4.7,
+    "reviews": 189,
+    "features": [
+      "Advanced video editing",
+      "AI-powered effects",
+      "Whisk Animate",
+      "audio enhancements",
+      "templates & transitions",
+      "text & sticker tools",
+      "multi-track editing",
+      "and seamless social media export."
+    ],
+    "offerEndsAt": "2025-11-07T06:00",
+    "inStock": true,
+    "whatsappNumber": "923343926359",
+    "whatsappMessage": "Hi! I'm interested in the Capcut Pro Apk",
+    "productlink": "https://drive.google.com/drive/folders/1tXzVUZFF5BpgERrPORS_O3Fh0lpCVcgV",
+    "specialcode": "CAPLABS",
+    "specialdisc": 100,
+    "is_scratch": false,
+    "scratch_disc": 0,
+    "scratch_coupon": ""
+  },
 ]
