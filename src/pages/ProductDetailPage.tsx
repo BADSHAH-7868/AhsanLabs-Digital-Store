@@ -58,17 +58,59 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
       });
   }, [productId]);
 
-  const applyCoupon = () => {
-    setCouponError('');
-    setDiscountMessage('');
-    let coupon = COUPONS.find((c) => c.code.toLowerCase() === couponCode.toLowerCase());
+  const applyCoupon = (coupon: Coupon) => {
+    if (appliedCoupon) return;
 
-    if (!coupon && product?.specialcode?.toLowerCase() === couponCode.toLowerCase() && product.specialdisc) {
-      coupon = { code: product.specialcode, discount: product.specialdisc, type: 'percentage' };
+    setAppliedCoupon(coupon);
+    const discount = (product!.price * coupon.discount) / 100;
+    const newFinalPrice = product!.price - discount;
+    setFinalPrice(newFinalPrice);
+
+    // Auto-fill coupon code in input (for visual feedback)
+    setCouponCode(coupon.code);
+
+    if (coupon.discount === 100) {
+      setDownloadLink(`${product!.productlink}`);
+      setDiscountMessage(`Amazing! You've unlocked 100% OFF with a secret code!`);
+    } else {
+      setDownloadLink('');
+      setDiscountMessage(`Success! ${coupon.discount}% OFF applied. Final price: PKR ${newFinalPrice.toFixed(2)}`);
     }
 
-    if (!coupon && product?.is_scratch && product?.scratch_coupon && couponCode.toLowerCase() === product.scratch_coupon.toLowerCase() && product.scratch_disc) {
-      coupon = { code: product.scratch_coupon, discount: product.scratch_disc, type: 'percentage' };
+    setShowConfetti(true);
+  };
+
+  const handleScratchComplete = () => {
+    if (!product?.is_scratch || !product.scratch_coupon || !product.scratch_disc) return;
+
+    const scratchCoupon: Coupon = {
+      code: product.scratch_coupon,
+      discount: product.scratch_disc,
+      type: 'percentage',
+    };
+
+    // Auto-apply the scratch coupon
+    applyCoupon(scratchCoupon);
+
+    // Close modal after animation
+    setTimeout(() => {
+      setShowScratchCard(false);
+    }, 1500);
+  };
+
+  const handleManualApply = () => {
+    setCouponError('');
+    if (appliedCoupon) {
+      setCouponError('Coupon already applied');
+      return;
+    }
+
+    const input = couponCode.trim().toLowerCase();
+    let coupon = COUPONS.find((c) => c.code.toLowerCase() === input);
+
+    // Special code
+    if (!coupon && product?.specialcode?.toLowerCase() === input && product.specialdisc) {
+      coupon = { code: product.specialcode, discount: product.specialdisc, type: 'percentage' };
     }
 
     if (!coupon) {
@@ -76,31 +118,7 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
       return;
     }
 
-    if (appliedCoupon) {
-      setCouponError('Coupon already applied');
-      return;
-    }
-
-    setAppliedCoupon(coupon);
-    const discount = coupon.type === 'percentage' ? (product!.price * coupon.discount) / 100 : coupon.discount;
-    const newFinalPrice = product!.price - discount;
-    setFinalPrice(newFinalPrice);
-
-    if (coupon.discount === 100) {
-      setDownloadLink(`${product!.productlink}`);
-      setDiscountMessage(`Congratulations! You've applied a 100% discount with code ${coupon.code} for ${product!.name}.`);
-    } else {
-      setDownloadLink('');
-      const isSpecialCode = product?.specialcode?.toLowerCase() === coupon.code.toLowerCase();
-      const isScratchCoupon = product?.scratch_coupon?.toLowerCase() === coupon.code.toLowerCase();
-      setDiscountMessage(
-        `Congratulations! You've got a ${coupon.discount}% discount with ${
-          isSpecialCode ? 'special code' : isScratchCoupon ? 'scratch coupon' : 'coupon'
-        } ${coupon.code}. Original price: PKR ${product!.originalPrice.toFixed(2)}, Final price: PKR ${newFinalPrice.toFixed(2)}. I want to buy ${product!.name}!`
-      );
-    }
-
-    setShowConfetti(true);
+    applyCoupon(coupon);
   };
 
   const handleBuyNow = () => {
@@ -108,9 +126,9 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
 
     let message = '';
     if (appliedCoupon && appliedCoupon.discount < 100) {
-      message = `Hi! ${discountMessage}`;
+      message = `Hi! ${discountMessage} I want to buy ${product.name}!`;
     } else if (appliedCoupon && appliedCoupon.discount === 100) {
-      message = `Hi! I applied a 100% discount coupon (${appliedCoupon.code}) for ${product.name} and received the download link.`;
+      message = `Hi! I unlocked 100% OFF for ${product.name} and got the download link.`;
     } else {
       message = `${product.whatsappMessage} (Price: PKR ${product.price.toFixed(2)})`;
     }
@@ -194,14 +212,7 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
                     src={product.image || '/images/placeholder.png'}
                     alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                    }}
                   />
-                  <div className="absolute inset-0 flex items-center justify-center text-8xl font-bold text-slate-300 dark:text-slate-700 hidden">
-                    {product.name[0]}
-                  </div>
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                     <div className="flex items-center gap-2 text-white opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
                       <Eye size={24} />
@@ -281,28 +292,28 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
                           <input
                             type="text"
                             value={couponCode}
-                            onChange={(e) => {
-                              setCouponCode(e.target.value);
-                              setCouponError('');
-                            }}
-                            placeholder="Enter coupon code"
-                            className="flex-1 px-4 py-3 rounded-xl bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm"
+                            onChange={(e) => setCouponCode(e.target.value)}
+                            placeholder="Got a coupon? Enter here..."
+                            disabled={!!appliedCoupon}
+                            className="flex-1 px-4 py-3 rounded-xl bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed"
                           />
                           <button
-                            onClick={applyCoupon}
-                            className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all hover:scale-105 shadow-md"
+                            onClick={handleManualApply}
+                            disabled={!!appliedCoupon}
+                            className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all hover:scale-105 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             Apply
                           </button>
                         </div>
                         {couponError && <p className="text-red-500 text-sm">{couponError}</p>}
-                        {product.is_scratch && (
+
+                        {product.is_scratch && !appliedCoupon && (
                           <button
                             onClick={() => setShowScratchCard(true)}
                             className="w-full py-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white rounded-xl font-bold transition-all hover:scale-105 shadow-md flex items-center justify-center gap-2"
                           >
                             <Sparkles size={18} />
-                            Reveal Secret Discount
+                            Scratch & Win Discount!
                           </button>
                         )}
                       </div>
@@ -377,26 +388,23 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
         </section>
       </div>
 
-      {/* MODALS */}
-      <Modal isOpen={showScratchCard} onClose={() => setShowScratchCard(false)} title="Reveal Your Discount">
+      {/* SCRATCH CARD MODAL */}
+      <Modal isOpen={showScratchCard} onClose={() => setShowScratchCard(false)} title="Scratch to Reveal Discount!">
         <div className="flex flex-col items-center p-6">
           <p className="text-center mb-6 text-slate-600 dark:text-slate-400">
-            Scratch the card below to reveal your exclusive discount!
+            Scratch below to unlock your secret discount!
           </p>
           <ScratchCard
             discount={product.scratch_disc}
-            onComplete={() => {
-              setTimeout(() => {
-                setShowScratchCard(false);
-                const coupon = product.scratch_coupon || `SCRATCH${product.scratch_disc}`;
-                setCouponCode(coupon);
-                applyCoupon();
-              }, 1000);
-            }}
+            onComplete={handleScratchComplete}
           />
+          <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
+            Coupon will be applied automatically!
+          </p>
         </div>
       </Modal>
 
+      {/* PREVIEW MODAL */}
       <Modal isOpen={showPreview} onClose={() => setShowPreview(false)} title="Product Preview">
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-500 to-purple-600">
           <img
