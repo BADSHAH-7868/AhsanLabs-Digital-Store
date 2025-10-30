@@ -346,7 +346,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
       </section>
 
       {/* ==== FAQ ==== */}
-      <section className="py-16 sm:py-20 lg:py-24 px-4 bg-slate-50 dark:bg-slate-900">
+      <section id+"faq" className="py-16 sm:py-20 lg:py-24 px-4 bg-slate-50 dark:bg-slate-900">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
             Frequently Asked Questions
