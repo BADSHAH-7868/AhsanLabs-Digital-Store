@@ -226,7 +226,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
             <div className="relative group order-1 lg:order-2">
               <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl blur-lg opacity-70 group-hover:opacity-100 transition duration-1000" />
               <div className="relative bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700">
-                <h3 className="text-xl sm:text-2xl font-bold mb-6 text-center text-slate-900 dark:text-white">Trusted by Thousand</h3>
+                <h3 className="text-xl sm:text-2xl font-bold mb-6 text-center text-slate-900 dark:text-white">Trusted by Thousands</h3>
                 <div className="space-y-4">
                   {[
                     { value: '98%', label: 'Customer Satisfaction', color: 'indigo' },
