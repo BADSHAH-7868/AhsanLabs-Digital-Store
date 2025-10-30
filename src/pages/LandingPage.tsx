@@ -369,7 +369,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
             <div>
               <h4 className="font-semibold text-white mb-4">Quick Links</h4>
               <ul className="space-y-2 text-sm">
-                {['Featured Product', 'About', 'Contact', 'FAQ'].map(item => (
+                {['Featured Products', 'About', 'Contact', 'FAQ'].map(item => (
                   <li key={item}>
                     <a href={`#${item.toLowerCase()}`} className="hover:text-indigo-400 transition-colors block py-1">
                       {item}
