@@ -1,413 +1,705 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel - Ahsan Labs</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          animation: { 'pulse-slow': 'pulse 6s ease-in-out infinite' }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
         }
-      }
-    }
-  </script>
-  <style>
-    :root {
-      --gradient-from: #f8fafc;
-      --gradient-via: #e0e7ff;
-      --gradient-to: #ffffff;
-    }
-    .dark {
-      --gradient-from: #0f172a;
-      --gradient-via: #1e293b;
-      --gradient-to: #1e293b;
-    }
-    body {
-      background: linear-gradient(to bottom, var(--gradient-from), var(--gradient-via), var(--gradient-to));
-      min-height: 100vh;
-      transition: background 0.5s ease;
-    }
-    .glass {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    .dark .glass {
-      background: rgba(30, 41, 59, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.15;
-      animation: float 20s infinite ease-in-out;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-30px) rotate(10deg); }
-    }
-    .toast {
-      animation: slideIn 0.4s ease-out, slideOut 0.4s ease-in 2.6s forwards;
-    }
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
-  </style>
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background-color: #2d2d2d;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+        }
+
+        .table-container {
+            background-color: #2d2d2d;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #3f3f3f;
+        }
+
+        th {
+            background-color: #3b3b3b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            color: #a3a3a3;
+        }
+
+        tr:hover {
+            background-color: #3a3a3a;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #10b981;
+        }
+
+        .btn-primary:hover {
+            background-color: #059669;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-warning {
+            background-color: #f59e0b;
+        }
+
+        .btn-warning:hover {
+            background-color: #d97706;
+        }
+
+        .btn-secondary {
+            background-color: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+
+        .modal {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background-color: #2d2d2d;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        input, textarea {
+            background-color: #3a3a3a;
+            border: 1px solid #4b5563;
+            color: #e5e7eb;
+            border-radius: 8px;
+            padding: 0.5rem;
+            width: 100%;
+            transition: border-color 0.3s ease;
+        }
+
+
+        label {
+            color: #a3a3a3;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .image-preview {
+            max-width: 120px;
+            max-height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #4b5563;
+        }
+
+        .invalid {
+            border-color: #ef4444;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
 </head>
-<body class="text-slate-800 dark:text-slate-100 font-sans">
-
-  <!-- Animated Gradient Blobs -->
-  <div class="fixed inset-0 pointer-events-none overflow-hidden">
-    <div class="blob w-96 h-96 bg-indigo-400 top-20 left-20 animate-pulse-slow"></div>
-    <div class="blob w-80 h-80 bg-purple-400 bottom-20 right-20 animate-pulse-slow delay-1000"></div>
-    <div class="blob w-72 h-72 bg-pink-400 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse-slow delay-500"></div>
-  </div>
-
-  <div class="relative z-10 container max-w-7xl mx-auto p-6">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-8">
-      <div>
-        <h1 class="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-          Admin Panel
-        </h1>
-        <p class="text-slate-600 dark:text-slate-400">Manage your digital products</p>
-      </div>
-      <div class="flex items-center gap-4">
-        <button id="uploadImagesBtn" class="btn glass px-5 py-2.5 rounded-xl font-medium shadow-lg hover:scale-105 transition-all">
-          Upload Images
-        </button>
-        <button id="themeToggle" class="p-2 rounded-xl glass shadow-lg hover:scale-110 transition-all">
-          Moon Icon
-        </button>
-      </div>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="flex flex-wrap gap-4 mb-8">
-      <button id="addNewBtn" class="btn bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:scale-105 transition-all flex items-center gap-2">
-        Add New Product
-      </button>
-      <button id="resetBtn" class="btn bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:scale-105 transition-all">
-        Reset All
-      </button>
-    </div>
-
-    <!-- Products Table -->
-    <div class="glass rounded-3xl overflow-hidden shadow-2xl">
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-slate-800/50 dark:bg-slate-900/70">
-            <tr>
-              <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">ID</th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Name</th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Price</th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Category</th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Stock</th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="productsTable" class="divide-y divide-slate-700/50"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Edit Modal -->
-    <div id="editModal" class="fixed inset-0 hidden flex items-center justify-center p-4 z-50">
-      <div class="glass rounded-3xl p-8 max-w-4xl w-full max-h-[85vh] overflow-y-auto shadow-2xl">
-        <h2 class="text-2xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-          Edit Product
-        </h2>
-        <div id="editForm" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-        <div class="flex gap-4 mt-8">
-          <button id="saveEditBtn" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-3 rounded-xl font-bold shadow-lg hover:scale-105 transition-all">
-            Save Changes
-          </button>
-          <button id="cancelEditBtn" class="flex-1 bg-gradient-to-r from-slate-600 to-slate-700 text-white py-3 rounded-xl font-bold shadow-lg hover:scale-105 transition-all">
-            Cancel
-          </button>
+<body>
+    <div class="container">
+        <!-- Navbar -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">Product Admin Panel</h1>
+            <button id="uploadImagesBtn" class="btn btn-secondary text-white">
+                Upload Images
+            </button>
         </div>
-      </div>
-    </div>
 
-    <!-- Upload Modal -->
-    <div id="uploadModal" class="fixed inset-0 hidden flex items-center justify-center p-4 z-50">
-      <div class="glass rounded-3xl p-8 max-w-2xl w-full shadow-2xl">
-        <h2 class="text-2xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-          Upload Images
-        </h2>
-        <div class="space-y-6">
-          <div>
-            <label class="block text-sm font-medium mb-2">Select Images</label>
-            <input type="file" id="bulkImageInput" accept="image/*" multiple class="w-full p-3 rounded-xl bg-white/10 border border-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none">
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-2">Prefix (optional)</label>
-            <input type="text" id="bulkCustomPrefix" placeholder="e.g., product_" class="w-full p-3 rounded-xl bg-white/10 border border-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none">
-          </div>
-          <div id="bulkUploadStatus" class="text-sm font-medium"></div>
-          <div id="uploadedImagesList" class="max-h-48 overflow-y-auto space-y-2"></div>
+        <div class="mb-6 flex gap-4">
+            <button id="addNewBtn" class="btn btn-primary text-white">
+                Add New Product
+            </button>
+            <button id="resetBtn" class="btn btn-danger text-white">
+                Reset to Default
+            </button>
         </div>
-        <div class="flex gap-4 mt-8">
-          <button id="bulkUploadBtn" class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-bold shadow-lg hover:scale-105 transition-all">
-            Upload All
-          </button>
-          <button id="closeUploadModal" class="flex-1 bg-gradient-to-r from-slate-600 to-slate-700 text-white py-3 rounded-xl font-bold shadow-lg hover:scale-105 transition-all">
-            Close
-          </button>
+
+        <div class="table-container card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>In Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTable"></tbody>
+            </table>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Toast Container -->
-  <div id="toastContainer" class="fixed bottom-6 right-6 space-y-3 z-50"></div>
-
-  <script>
-    const API_URL = 'http://localhost:5000/api/products';
-    let products = [];
-    let editingId = null;
-    let editedProduct = null;
-
-    // Theme Toggle
-    const themeToggle = document.getElementById('themeToggle');
-    const html = document.documentElement;
-    const moonIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>`;
-    const sunIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>`;
-
-    if (localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      html.classList.add('dark');
-      themeToggle.innerHTML = sunIcon;
-    } else {
-      themeToggle.innerHTML = moonIcon;
-    }
-
-    themeToggle.addEventListener('click', () => {
-      html.classList.toggle('dark');
-      const isDark = html.classList.contains('dark');
-      themeToggle.innerHTML = isDark ? sunIcon : moonIcon;
-      localStorage.setItem('darkMode', isDark);
-    });
-
-    // Load products
-    async function loadProducts() {
-      try {
-        const res = await fetch(API_URL);
-        if (!res.ok) throw new Error('Failed to load');
-        products = await res.json();
-        renderTable();
-      } catch (err) {
-        showToast('Failed to load products', 'error');
-      }
-    }
-
-    // Render table
-    function renderTable() {
-      const tbody = document.getElementById('productsTable');
-      tbody.innerHTML = '';
-      products.forEach(p => {
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-white/5 dark:hover:bg-slate-800/50 transition-all';
-        tr.innerHTML = `
-          <td class="px-6 py-4 text-sm">${p.id}</td>
-          <td class="px-6 py-4 font-medium">${p.name}</td>
-          <td class="px-6 py-4">PKR ${p.price.toFixed(2)}</td>
-          <td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400">${p.category}</span></td>
-          <td class="px-6 py-4"><span class="text-sm ${p.inStock ? 'text-emerald-500' : 'text-red-500'}">${p.inStock ? 'Yes' : 'No'}</span></td>
-          <td class="px-6 py-4">
-            <div class="flex gap-2">
-              <button onclick="editProduct('${p.id}')" class="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg text-xs font-medium hover:scale-105 transition-all">Edit</button>
-              <button onclick="deleteProduct('${p.id}')" class="px-3 py-1.5 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg text-xs font-medium hover:scale-105 transition-all">Delete</button>
+        <!-- Edit Modal -->
+        <div id="editModal" class="modal fixed inset-0 hidden flex items-center justify-center p-4">
+            <div class="modal-content">
+                <h2 class="text-xl font-bold mb-6">Edit Product Details</h2>
+                <div id="editForm" class="form-grid"></div>
+                <div class="flex gap-4 mt-6">
+                    <button id="saveEditBtn" class="btn btn-primary text-white">
+                        Save
+                    </button>
+                    <button id="cancelEditBtn" class="btn btn-secondary text-white">
+                        Cancel
+                    </button>
+                </div>
             </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // Toast
-    function showToast(msg, type = 'success') {
-      const toast = document.createElement('div');
-      toast.className = `toast px-6 py-3 rounded-xl shadow-2xl text-white font-medium ${type === 'error' ? 'bg-gradient-to-r from-red-500 to-pink-500' : 'bg-gradient-to-r from-emerald-500 to-teal-500'}`;
-      toast.textContent = msg;
-      document.getElementById('toastContainer').appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
-    }
-
-    // Edit
-    function editProduct(id) {
-      const p = products.find(x => x.id === id) || { id: Date.now().toString(), features: [] };
-      editingId = p.id;
-      editedProduct = { ...p, features: p.features || [] };
-      showEditModal();
-    }
-
-    function showEditModal() {
-      const form = document.getElementById('editForm');
-      form.innerHTML = `
-        ${['name', 'description', 'price', 'originalPrice', 'category', 'image', 'rating', 'reviews', 'offerEndsAt', 'whatsappNumber', 'whatsappMessage', 'productlink', 'specialcode', 'specialdisc', 'scratch_coupon'].map(field => `
-          <div>
-            <label class="block text-sm font-medium mb-1 capitalize">${field.replace(/([A-Z])/g, ' $1')}</label>
-            ${field === 'description' ? `<textarea class="w-full p-3 rounded-xl bg-white/10 border border-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none" data-field="${field}" rows="3">${editedProduct[field] || ''}</textarea>` :
-             field === 'features' ? `<textarea class="w-full p-3 rounded-xl bg-white/10 border border-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none" data-field="features" rows="2">${editedProduct.features.join(', ')}</textarea>` :
-             field === 'is_scratch' ? `<label class="flex items-center gap-2"><input type="checkbox" data-field="is_scratch" ${editedProduct.is_scratch ? 'checked' : ''}> <span class="text-sm">Enable Scratch Card</span></label>` :
-             field === 'image' ? `
-               <input type="text" value="${editedProduct.image || ''}" class="w-full p-3 rounded-xl bg-white/10 border border-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none mb-2" data-field="image" placeholder="/images/product.jpg">
-               <div class="flex gap-2 items-center">
-                 <input type="file" id="productImageInput" accept="image/*" class="flex-1">
-                 <input type="text" id="customImageName" placeholder="filename" class="w-32 p-2 rounded bg-white/10 border">
-                 <button onclick="uploadProductImage()" class="px-3 py-1 bg-indigo-600 text-white rounded text-xs">Upload</button>
-               </div>
-               <div id="imageUploadStatus" class="text-xs mt-1"></div>
-               ${editedProduct.image ? `<img src="http://localhost:5000${editedProduct.image}" class="mt-2 h-20 w-20 object-cover rounded-lg border">` : ''}
-             ` :
-             ['price', 'originalPrice', 'rating', 'reviews', 'specialdisc', 'scratch_disc'].includes(field) ?
-               `<input type="number" step="${field.includes('price') ? '0.01' : field === 'rating' ? '0.1' : '1'}" value="${editedProduct[field] || 0}" class="w-full p-3 rounded-xl bg-white/10 border border-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none" data-field="${field}">` :
-             field === 'offerEndsAt' ?
-               `<input type="datetime-local" value="${editedProduct.offerEndsAt ? new Date(editedProduct.offerEndsAt).toISOString().slice(0,16) : ''}" class="w-full p-3 rounded-xl bg-white/10 border border-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none" data-field="${field}">` :
-               `<input type="text" value="${editedProduct[field] || ''}" class="w-full p-3 rounded-xl bg-white/10 border border-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none" data-field="${field}">`}
-          </div>
-        `).join('')}
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium mb-1">Features (comma-separated)</label>
-          <textarea class="w-full p-3 rounded-xl bg-white/10 border border-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none" data-field="features" rows="2">${editedProduct.features.join(', ')}</textarea>
         </div>
-      `;
-      document.getElementById('editModal').classList.remove('hidden');
-    }
 
-    // Save
-    async function saveEdit() {
-      if (!validateForm()) return showToast('Fill all required fields', 'error');
+        <!-- Upload Images Modal -->
+        <div id="uploadModal" class="modal fixed inset-0 hidden flex items-center justify-center p-4">
+            <div class="modal-content">
+                <h2 class="text-xl font-bold mb-6">Upload Images</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block mb-2">Select Images to Upload</label>
+                        <input type="file" id="bulkImageInput" accept="image/*" multiple class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block mb-2">Custom Filename Prefix (optional)</label>
+                        <input type="text" id="bulkCustomPrefix" placeholder="e.g., product_" class="w-full p-2 border rounded">
+                    </div>
+                    <div id="bulkUploadStatus" class="text-sm"></div>
+                    <div id="uploadedImagesList" class="space-y-2 max-h-40 overflow-y-auto"></div>
+                </div>
+                <div class="flex gap-4 mt-6">
+                    <button id="bulkUploadBtn" class="btn btn-primary text-white">
+                        Upload Images
+                    </button>
+                    <button id="closeUploadModal" class="btn btn-secondary text-white">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-      const inputs = document.querySelectorAll('#editForm [data-field]');
-      inputs.forEach(inp => {
-        const f = inp.dataset.field;
-        if (inp.type === 'checkbox') editedProduct[f] = inp.checked;
-        else if (inp.type === 'number') editedProduct[f] = parseFloat(inp.value) || 0;
-        else if (f === 'features') editedProduct[f] = inp.value.split(',').map(s => s.trim()).filter(Boolean);
-        else editedProduct[f] = inp.value.trim();
-      });
+    <script>
+        const API_URL = 'http://localhost:5000/api/products';
+        let products = [];
+        let editingId = null;
+        let editedProduct = null;
 
-      const idx = products.findIndex(p => p.id === editingId);
-      if (idx > -1) products[idx] = editedProduct;
-      else products.push(editedProduct);
+        // Load products on page load
+        async function loadProducts() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Failed to load products');
+                products = await response.json();
+                renderTable();
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showToast('Error loading products', 'error');
+            }
+        }
 
-      await saveProducts(products);
-      closeModal('editModal');
-      renderTable();
-      showToast('Product saved!');
-    }
+        // Render products table
+        function renderTable() {
+            const tbody = document.getElementById('productsTable');
+            tbody.innerHTML = '';
 
-    function validateForm() {
-      return ['name', 'price', 'category'].every(f => {
-        const el = document.querySelector(`[data-field="${f}"]`);
-        const valid = el.value.trim();
-        el.classList.toggle('border-red-500', !valid);
-        return valid;
-      });
-    }
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-700 transition-colors';
 
-    function closeModal(id) {
-      document.getElementById(id).classList.add('hidden');
-    }
+                row.innerHTML = `
+                    <td class="p-3">${product.id}</td>
+                    <td class="p-3">${product.name}</td>
+                    <td class="p-3">PKR ${product.price.toFixed(2)}</td>
+                    <td class="p-3">${product.category}</td>
+                    <td class="p-3">${product.inStock ? 'Yes' : 'No'}</td>
+                    <td class="p-3">
+                        <div class="flex gap-2">
+                            <button onclick="editProduct('${product.id}')" class="btn btn-warning text-white text-sm">Edit</button>
+                            <button onclick="deleteProduct('${product.id}')" class="btn btn-danger text-white text-sm">Delete</button>
+                        </div>
+                    </td>
+                `;
 
-    async function deleteProduct(id) {
-      if (!confirm('Delete this product?')) return;
-      products = products.filter(p => p.id !== id);
-      await saveProducts(products);
-      renderTable();
-      showToast('Product deleted');
-    }
+                tbody.appendChild(row);
+            });
+        }
 
-    function addNewProduct() {
-      editProduct(null);
-    }
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-4 right-4 p-4 rounded-lg text-white ${type === 'error' ? 'bg-red-500' : 'bg-green-500'} shadow-lg`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
 
-    async function resetToDefault() {
-      if (!confirm('Reset all products?')) return;
-      await saveProducts([]);
-      products = [];
-      renderTable();
-      showToast('Reset complete');
-    }
+        // Edit product
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
 
-    async function saveProducts(data) {
-      await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-    }
+            editingId = id;
+            editedProduct = { ...product };
+            showEditModal();
+        }
 
-    async function uploadProductImage() {
-      const file = document.getElementById('productImageInput').files[0];
-      const name = document.getElementById('customImageName').value.trim();
-      const status = document.getElementById('imageUploadStatus');
-      if (!file) return;
+        // Show edit modal with all fields
+        function showEditModal() {
+            const modal = document.getElementById('editModal');
+            const form = document.getElementById('editForm');
 
-      const fd = new FormData();
-      fd.append('image', file);
-      if (name) fd.append('customName', name);
+            form.innerHTML = `
+                <div>
+                    <label class="block">Name</label>
+                    <input type="text" value="${editedProduct.name || ''}" class="w-full p-2 border rounded" data-field="name" required>
+                </div>
+                <div>
+                    <label class="block">Description</label>
+                    <textarea class="w-full p-2 border rounded" rows="3" data-field="description">${editedProduct.description || ''}</textarea>
+                </div>
+                <div>
+                    <label class="block">Price</label>
+                    <input type="number" step="0.01" value="${editedProduct.price || 0}" class="w-full p-2 border rounded" data-field="price" min="0" required>
+                </div>
+                <div>
+                    <label class="block">Original Price</label>
+                    <input type="number" step="0.01" value="${editedProduct.originalPrice || 0}" class="w-full p-2 border rounded" data-field="originalPrice" min="0">
+                </div>
+                <div>
+                    <label class="block">Category</label>
+                    <input type="text" value="${editedProduct.category || ''}" class="w-full p-2 border rounded" data-field="category" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block">Image URL/Path</label>
+                    <input type="text" value="${editedProduct.image || ''}" class="w-full p-2 border rounded mb-2" data-field="image" placeholder="Enter image URL or path (e.g., /images/product.jpg)">
+                    <div class="flex gap-2 items-center">
+                        <label class="text-sm text-gray-400">Or upload new image:</label>
+                        <input type="file" id="productImageInput" accept="image/*" class="border p-2 rounded">
+                        <input type="text" id="customImageName" placeholder="Custom filename (optional)" class="p-2 border rounded" style="width: 200px;">
+                        <button onclick="uploadProductImage()" class="btn btn-primary text-white">Upload</button>
+                    </div>
+                    <div id="imageUploadStatus" class="text-sm mt-1"></div>
+                    ${editedProduct.image ? `<img src="http://localhost:5000${editedProduct.image}" alt="Current image" class="image-preview mt-2">` : ''}
+                </div>
+                <div>
+                    <label class="block">Rating</label>
+                    <input type="number" step="0.1" value="${editedProduct.rating || 0}" class="w-full p-2 border rounded" data-field="rating" min="0" max="5">
+                </div>
+                <div>
+                    <label class="block">Reviews</label>
+                    <input type="number" value="${editedProduct.reviews || 0}" class="w-full p-2 border rounded" data-field="reviews" min="0">
+                </div>
+                <div>
+                    <label class="block">Offer Ends At</label>
+                    <input type="datetime-local" value="${editedProduct.offerEndsAt ? new Date(editedProduct.offerEndsAt).toISOString().slice(0, 16) : ''}" class="w-full p-2 border rounded" data-field="offerEndsAt">
+                </div>
+                <div>
+                    <label class="block">WhatsApp Number</label>
+                    <input type="text" value="${editedProduct.whatsappNumber || ''}" class="w-full p-2 border rounded" data-field="whatsappNumber">
+                </div>
+                <div>
+                    <label class="block">WhatsApp Message</label>
+                    <input type="text" value="${editedProduct.whatsappMessage || ''}" class="w-full p-2 border rounded" data-field="whatsappMessage">
+                </div>
+                <div>
+                    <label class="block">Product Link</label>
+                    <input type="text" value="${editedProduct.productlink || ''}" class="w-full p-2 border rounded" data-field="productlink">
+                </div>
+                <div>
+                    <label class="block">Is Scratch</label>
+                    <input type="checkbox" ${editedProduct.is_scratch ? 'checked' : ''} data-field="is_scratch">
+                </div>
+                <div>
+                    <label class="block">Scratch Discount</label>
+                    <input type="number" value="${editedProduct.scratch_disc || 0}" class="w-full p-2 border rounded" data-field="scratch_disc" min="0">
+                </div>
+                <div>
+                    <label class="block">Special Code</label>
+                    <input type="text" value="${editedProduct.specialcode || ''}" class="w-full p-2 border rounded" data-field="specialcode">
+                </div>
+                <div>
+                    <label class="block">Special Discount</label>
+                    <input type="number" value="${editedProduct.specialdisc || 0}" class="w-full p-2 border rounded" data-field="specialdisc" min="0">
+                </div>
+                <div>
+                    <label class="block">Scratch Coupon</label>
+                    <input type="text" value="${editedProduct.scratch_coupon || ''}" class="w-full p-2 border rounded" data-field="scratch_coupon">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block">Features (comma-separated)</label>
+                    <textarea class="w-full p-2 border rounded" rows="2" data-field="features">${editedProduct.features ? editedProduct.features.join(', ') : ''}</textarea>
+                </div>
+            `;
 
-      status.textContent = 'Uploading...';
-      try {
-        const res = await fetch('http://localhost:5000/api/upload-image', { method: 'POST', body: fd });
-        const data = await res.json();
-        if (res.ok) {
-          document.querySelector('[data-field="image"]').value = data.imageUrl;
-          status.innerHTML = `<span class="text-green-400">Uploaded!</span>`;
-          const img = form.querySelector('img') || document.createElement('img');
-          img.src = `http://localhost:5000${data.imageUrl}`;
-          img.className = 'mt-2 h-20 w-20 object-cover rounded-lg border';
-          form.querySelector('[data-field="image"]').parentElement.appendChild(img);
-        } else throw new Error(data.error);
-      } catch (e) {
-        status.innerHTML = `<span class="text-red-400">${e.message}</span>`;
-      }
-    }
+            modal.classList.remove('hidden');
+        }
 
-    // Bulk Upload
-    async function bulkUploadImages() {
-      const files = document.getElementById('bulkImageInput').files;
-      const prefix = document.getElementById('bulkCustomPrefix').value.trim();
-      const status = document.getElementById('bulkUploadStatus');
-      const list = document.getElementById('uploadedImagesList');
-      if (!files.length) return;
+        // Validate form
+        function validateForm() {
+            const form = document.getElementById('editForm');
+            const requiredInputs = form.querySelectorAll('[required]');
+            let isValid = true;
 
-      list.innerHTML = ''; status.textContent = `Uploading ${files.length}...`;
-      let ok = 0, fail = 0;
+            requiredInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('invalid');
+                    isValid = false;
+                } else {
+                    input.classList.remove('invalid');
+                }
+            });
 
-      for (let i = 0; i < files.length; i++) {
-        const fd = new FormData();
-        fd.append('image', files[i]);
-        if (prefix) fd.append('customName', `${prefix}${i+1}`);
-        try {
-          const res = await fetch('http://localhost:5000/api/upload-image', { method: 'POST', body: fd });
-          const data = await res.json();
-          const div = document.createElement('div');
-          div.className = `p-2 rounded-lg text-sm ${res.ok ? 'bg-emerald-900/50 text-emerald-300' : 'bg-red-900/50 text-red-300'}`;
-          div.innerHTML = res.ok ? `Success: ${data.imageUrl}` : `Failed: ${files[i].name}`;
-          list.appendChild(div);
-          res.ok ? ok++ : fail++;
-        } catch { fail++; }
-      }
-      status.textContent = `Done: ${ok} success, ${fail} failed`;
-      status.className = fail ? 'text-yellow-400' : 'text-emerald-400';
-    }
+            return isValid;
+        }
 
-    // Events
-    document.getElementById('addNewBtn').onclick = addNewProduct;
-    document.getElementById('resetBtn').onclick = resetToDefault;
-    document.getElementById('saveEditBtn').onclick = saveEdit;
-    document.getElementById('cancelEditBtn').onclick = () => closeModal('editModal');
-    document.getElementById('uploadImagesBtn').onclick = () => document.getElementById('uploadModal').classList.remove('hidden');
-    document.getElementById('closeUploadModal').onclick = () => closeModal('uploadModal');
-    document.getElementById('bulkUploadBtn').onclick = bulkUploadImages;
+        // Save edit
+        async function saveEdit() {
+            if (!editedProduct) return;
 
-    loadProducts();
-  </script>
+            if (!validateForm()) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+
+            const form = document.getElementById('editForm');
+            const inputs = form.querySelectorAll('[data-field]');
+
+            inputs.forEach(input => {
+                const field = input.dataset.field;
+                if (input.type === 'checkbox') {
+                    editedProduct[field] = input.checked;
+                } else if (input.type === 'number') {
+                    editedProduct[field] = parseFloat(input.value) || 0;
+                } else if (field === 'features') {
+                    editedProduct[field] = input.value.split(',').map(s => s.trim()).filter(s => s);
+                } else {
+                    editedProduct[field] = input.value.trim();
+                }
+            });
+
+            const index = products.findIndex(p => p.id === editingId);
+            if (index !== -1) {
+                products[index] = { ...editedProduct };
+            } else {
+                products.push(editedProduct);
+            }
+
+            await saveProducts(products);
+            editingId = null;
+            editedProduct = null;
+            document.getElementById('editModal').classList.add('hidden');
+            renderTable();
+            showToast('Product saved successfully!');
+        }
+
+        // Cancel edit
+        function cancelEdit() {
+            editingId = null;
+            editedProduct = null;
+            document.getElementById('editModal').classList.add('hidden');
+            renderTable();
+        }
+
+        // Delete product
+        async function deleteProduct(id) {
+            if (!confirm('Are you sure you want to delete this product?')) return;
+
+            products = products.filter(p => p.id !== id);
+            await saveProducts(products);
+            renderTable();
+            showToast('Product deleted successfully!');
+        }
+
+        // Add new product
+        function addNewProduct() {
+            const newId = (products.length + 1).toString();
+            const newProduct = {
+                id: newId,
+                name: '',
+                description: '',
+                price: 0,
+                originalPrice: 0,
+                image: '',
+                category: '',
+                rating: 0,
+                reviews: 0,
+                features: [],
+                offerEndsAt: '',
+                inStock: true,
+                whatsappNumber: '',
+                whatsappMessage: '',
+                productlink: '',
+                is_scratch: false,
+                scratch_disc: 0,
+                specialcode: '',
+                specialdisc: 0,
+                scratch_coupon: ''
+            };
+
+            editingId = newId;
+            editedProduct = { ...newProduct };
+            showEditModal();
+        }
+
+        // Reset to default
+        async function resetToDefault() {
+            if (!confirm('Are you sure you want to reset all products to default (empty array)?')) return;
+
+            await saveProducts([]);
+            products = [];
+            renderTable();
+            showToast('Products reset successfully!');
+        }
+
+        // Save products to server
+        async function saveProducts(updatedProducts) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedProducts),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error updating products');
+                }
+            } catch (error) {
+                console.error('Error saving products:', error);
+                showToast('Error saving products', 'error');
+            }
+        }
+
+        // Upload product image
+        async function uploadProductImage() {
+            const input = document.getElementById('productImageInput');
+            const customNameInput = document.getElementById('customImageName');
+            const status = document.getElementById('imageUploadStatus');
+
+            if (!input.files[0]) {
+                status.textContent = 'Please select an image file';
+                status.className = 'text-sm text-red-500';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', input.files[0]);
+            if (customNameInput.value.trim()) {
+                formData.append('customName', customNameInput.value.trim());
+            }
+
+            status.textContent = 'Uploading...';
+            status.className = 'text-sm text-blue-500';
+
+            try {
+                const response = await fetch('http://localhost:5000/api/upload-image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    status.textContent = 'Image uploaded successfully!';
+                    status.className = 'text-sm text-green-500';
+
+                    const imageInput = document.querySelector('[data-field="image"]');
+                    imageInput.value = result.imageUrl;
+
+                    const form = document.getElementById('editForm');
+                    let img = form.querySelector('img');
+                    if (img) {
+                        img.src = 'http://localhost:5000' + result.imageUrl;
+                    } else {
+                        const imageDiv = form.querySelector('[data-field="image"]').parentElement;
+                        img = document.createElement('img');
+                        img.src = 'http://localhost:5000' + result.imageUrl;
+                        img.alt = 'Current image';
+                        img.className = 'image-preview mt-2';
+                        imageDiv.appendChild(img);
+                    }
+
+                    input.value = '';
+                    customNameInput.value = '';
+                } else {
+                    status.textContent = result.error || 'Upload failed';
+                    status.className = 'text-sm text-red-500';
+                }
+            } catch (error) {
+                status.textContent = 'Upload failed: ' + error.message;
+                status.className = 'text-sm text-red-500';
+            }
+        }
+
+        // Show upload modal
+        function showUploadModal() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+        }
+
+        // Close upload modal
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+            document.getElementById('bulkImageInput').value = '';
+            document.getElementById('bulkCustomPrefix').value = '';
+            document.getElementById('bulkUploadStatus').textContent = '';
+            document.getElementById('uploadedImagesList').innerHTML = '';
+        }
+
+        // Bulk upload images
+        async function bulkUploadImages() {
+            const input = document.getElementById('bulkImageInput');
+            const prefixInput = document.getElementById('bulkCustomPrefix');
+            const status = document.getElementById('bulkUploadStatus');
+            const list = document.getElementById('uploadedImagesList');
+
+            if (!input.files.length) {
+                status.textContent = 'Please select image files';
+                status.className = 'text-sm text-red-500';
+                return;
+            }
+
+            const files = Array.from(input.files);
+            const prefix = prefixInput.value.trim();
+            list.innerHTML = '';
+            status.textContent = `Uploading ${files.length} images...`;
+            status.className = 'text-sm text-blue-500';
+
+            let successCount = 0;
+            let failCount = 0;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const formData = new FormData();
+                formData.append('image', file);
+
+                if (prefix) {
+                    formData.append('customName', `${prefix}${i + 1}`);
+                }
+
+                try {
+                    const response = await fetch('http://localhost:5000/api/upload-image', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        successCount++;
+                        const item = document.createElement('div');
+                        item.className = 'flex items-center gap-2 p-2 bg-green-900 rounded';
+                        item.innerHTML = `
+                            <span class="text-green-300">✓</span>
+                            <span class="text-sm">${file.name} → ${result.imageUrl}</span>
+                        `;
+                        list.appendChild(item);
+                    } else {
+                        failCount++;
+                        const item = document.createElement('div');
+                        item.className = 'flex items-center gap-2 p-2 bg-red-900 rounded';
+                        item.innerHTML = `
+                            <span class="text-red-300">✗</span>
+                            <span class="text-sm">${file.name}: ${result.error || 'Upload failed'}</span>
+                        `;
+                        list.appendChild(item);
+                    }
+                } catch (error) {
+                    failCount++;
+                    const item = document.createElement('div');
+                    item.className = 'flex items-center gap-2 p-2 bg-red-900 rounded';
+                    item.innerHTML = `
+                        <span class="text-red-300">✗</span>
+                        <span class="text-sm">${file.name}: ${error.message}</span>
+                    `;
+                    list.appendChild(item);
+                }
+            }
+
+            status.textContent = `Upload complete: ${successCount} successful, ${failCount} failed`;
+            status.className = failCount > 0 ? 'text-sm text-yellow-500' : 'text-sm text-green-500';
+
+            if (successCount > 0) {
+                showToast(`${successCount} images uploaded successfully!`);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('addNewBtn').addEventListener('click', addNewProduct);
+        document.getElementById('resetBtn').addEventListener('click', resetToDefault);
+        document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
+        document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
+        document.getElementById('uploadImagesBtn').addEventListener('click', showUploadModal);
+        document.getElementById('closeUploadModal').addEventListener('click', closeUploadModal);
+        document.getElementById('bulkUploadBtn').addEventListener('click', bulkUploadImages);
+
+        // Load products on page load
+        loadProducts();
+    </script>
 </body>
 </html>
