@@ -66,7 +66,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
               Explore Products
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
             </button>
-            <a href=""></a>
+            <a href="googel"></a>
             <button className="bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border-2 border-indigo-600 dark:border-indigo-500 px-8 py-4 rounded-full font-semibold hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all">
               Watch Demo
             </button>
