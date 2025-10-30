@@ -75,7 +75,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
             </button>
             <a href="https://www.googel.com/" className="bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border-2 border-indigo-600 dark:border-indigo-500 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all w-full sm:w-auto"></a>
             <button className="bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border-2 border-indigo-600 dark:border-indigo-500 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all w-full sm:w-auto">
-              Join Channel
+              
             </button>
           </div>
 
