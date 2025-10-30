@@ -345,7 +345,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             <div>
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-4">BrandYour</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-4"></h3>
               <p className="text-slate-400 text-sm leading-relaxed">
                 Premium digital products to help you grow faster, work smarter, and achieve more.
               </p>
