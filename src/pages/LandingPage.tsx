@@ -30,7 +30,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
     e.preventDefault();
     setIsSubmitting(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
-    alert('Thank you! We\'ll get back to you soon.');
+    alert("Thank you! We'll get back to you soon.");
     setFormData({ name: '', email: '', message: '' });
     setIsSubmitting(false);
   };
@@ -38,16 +38,14 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 text-slate-900 dark:text-slate-100">
 
-      {/* === HERO SECTION - RESPONSIVE + NAVBAR SPACING === */}
+      {/* ==== HERO SECTION ==== */}
       <section className="relative min-h-screen flex flex-col justify-center items-center pt-16 pb-12 px-4 overflow-hidden sm:pt-20 sm:pb-24">
-        {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-500/5 dark:via-purple-500/5 dark:to-pink-500/5" />
-        
-        {/* Animated Blobs */}
         <div className="absolute top-10 left-10 w-64 h-64 sm:w-72 sm:h-72 bg-indigo-400/20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-10 right-10 w-80 h-80 sm:w-96 sm:h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse delay-1000" />
 
         <div className="max-w-7xl mx-auto relative z-10 text-center w-full">
+
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 leading-tight">
             <TypingText
@@ -61,7 +59,9 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
           </h1>
 
           <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed px-4">
-            Discover handcrafted digital tools trusted by <span className="font-bold text-indigo-600 dark:text-indigo-400">10,000+</span> entrepreneurs and creators.
+            Discover handcrafted digital tools trusted by{' '}
+            <span className="font-bold text-indigo-600 dark:text-indigo-400">10,000+</span>{' '}
+            entrepreneurs and creators.
           </p>
 
           {/* CTA Buttons */}
@@ -78,8 +78,8 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
             </button>
           </div>
 
-          {/* Feature Boxes */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto px-4">
+          {/* ==== FEATURE BOXES – NOW COLORED & RESPONSIVE ==== */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto px-4">
             {[
               { icon: Zap, title: 'Instant Delivery', desc: 'Get your digital products immediately after purchase', color: 'indigo' },
               { icon: Shield, title: 'Money-Back Guarantee', desc: '30-day refund policy, no questions asked', color: 'emerald' },
@@ -87,20 +87,35 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
             ].map((feature, i) => (
               <div
                 key={i}
-                className="group bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-5 sm:p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 hover:shadow-xl hover:scale-105 transition-all duration-300"
+                className="group bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-4 sm:p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 hover:shadow-xl hover:scale-105 transition-all duration-300"
               >
-                <div className={`w-12 h-12 bg-${feature.color}-100 dark:bg-${feature.color}-900/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                  <feature.icon className={`text-${feature.color}-600 dark:text-${feature.color}-400`} size={24} />
+                {/* Icon with responsive colour */}
+                <div
+                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform
+                    bg-${feature.color}-100 dark:bg-${feature.color}-900/30`}
+                >
+                  <feature.icon
+                    className={`text-${feature.color}-600 dark:text-${feature.color}-400`}
+                    size={24}
+                  />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{feature.title}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{feature.desc}</p>
+
+                {/* Title – bold & coloured */}
+                <h3 className="text-lg sm:text-xl font-bold mb-2 text-slate-900 dark:text-white">
+                  {feature.title}
+                </h3>
+
+                {/* Description – readable */}
+                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {feature.desc}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* === FEATURED PRODUCTS === */}
+      {/* ==== FEATURED PRODUCTS ==== */}
       <section className="py-16 sm:py-20 lg:py-24 px-4 bg-white dark:bg-slate-900">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
@@ -166,15 +181,16 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
         </div>
       </section>
 
-      {/* === WHY CHOOSE US === */}
-      <section id = "about" className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
+      {/* ==== WHY CHOOSE US ==== */}
+      <section className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
               Why Choose Us?
             </h2>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-              We don’t just sell products — we deliver <span className="font-bold text-indigo-600 dark:text-indigo-400">real growth</span>.
+              We don’t just sell products — we deliver{' '}
+              <span className="font-bold text-indigo-600 dark:text-indigo-400">real growth</span>.
             </p>
           </div>
 
@@ -236,7 +252,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
         </div>
       </section>
 
-      {/* === TESTIMONIALS === */}
+      {/* ==== TESTIMONIALS ==== */}
       <section className="py-16 sm:py-20 lg:py-24 px-4 bg-slate-50 dark:bg-slate-900">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
@@ -247,7 +263,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
         </div>
       </section>
 
-      {/* === CONTACT === */}
+      {/* ==== CONTACT ==== */}
       <section id="contact" className="py-16 sm:py-20 lg:py-24 px-4 bg-white dark:bg-slate-800">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
@@ -329,8 +345,8 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
         </div>
       </section>
 
-      {/* === FAQ === */}
-      <section id = "faq" className="py-16 sm:py-20 lg:py-24 px-4 bg-slate-50 dark:bg-slate-900">
+      {/* ==== FAQ ==== */}
+      <section className="py-16 sm:py-20 lg:py-24 px-4 bg-slate-50 dark:bg-slate-900">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
             Frequently Asked Questions
@@ -340,7 +356,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
         </div>
       </section>
 
-      {/* === FOOTER - EXTRA BOTTOM PADDING === */}
+      {/* ==== FOOTER ==== */}
       <footer className="bg-slate-900 text-slate-300 py-12 px-4 pb-8 sm:pb-16">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
@@ -390,7 +406,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
             </div>
           </div>
           <div className="border-t border-slate-800 pt-6 text-center text-sm text-slate-500">
-            <p>&copy; {new Date().getFullYear()} YourBrand. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} AhsanLabs. All rights reserved.</p>
           </div>
         </div>
       </footer>
