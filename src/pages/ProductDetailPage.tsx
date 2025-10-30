@@ -6,7 +6,7 @@ import { ShareButtons } from '../components/ShareButtons';
 import { Modal } from '../components/Modal';
 import { ScratchCard } from '../components/ScratchCard';
 import { Confetti } from '../components/Confetti';
-import { ArrowLeft, Check, Copy, MessageCircle, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, Check, Copy, MessageCircle, ShoppingCart, Eye, Sparkles } from 'lucide-react';
 import { getRating, saveRating, addToCart, getCart } from '../utils/localStorage';
 
 interface ProductDetailPageProps {
@@ -16,7 +16,6 @@ interface ProductDetailPageProps {
 
 const COUPONS: Coupon[] = [
   { code: 'AHSANLABSMEGA', discount: 15, type: 'percentage' },
-  
   { code: 'WELCOME10', discount: 10, type: 'percentage' },
   { code: 'MEGA30', discount: 30, type: 'percentage' },
 ];
@@ -40,9 +39,7 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
     setError('');
     fetch('/products.json')
       .then((res) => {
-        if (!res.ok) {
-          throw new Error('Failed to fetch products');
-        }
+        if (!res.ok) throw new Error('Failed to fetch products');
         return res.json();
       })
       .then((data: Product[]) => {
@@ -66,19 +63,11 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
     setDiscountMessage('');
     let coupon = COUPONS.find((c) => c.code.toLowerCase() === couponCode.toLowerCase());
 
-    // Check for special code
     if (!coupon && product?.specialcode?.toLowerCase() === couponCode.toLowerCase() && product.specialdisc) {
       coupon = { code: product.specialcode, discount: product.specialdisc, type: 'percentage' };
     }
 
-    // Check for scratch coupon
-    if (
-      !coupon &&
-      product?.is_scratch &&
-      product?.scratch_coupon &&
-      couponCode.toLowerCase() === product.scratch_coupon.toLowerCase() &&
-      product.scratch_disc
-    ) {
+    if (!coupon && product?.is_scratch && product?.scratch_coupon && couponCode.toLowerCase() === product.scratch_coupon.toLowerCase() && product.scratch_disc) {
       coupon = { code: product.scratch_coupon, discount: product.scratch_disc, type: 'percentage' };
     }
 
@@ -99,9 +88,7 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
 
     if (coupon.discount === 100) {
       setDownloadLink(`${product!.productlink}`);
-      setDiscountMessage(
-        `Congratulations! You've applied a 100% discount with code ${coupon.code} for ${product!.name}.`
-      );
+      setDiscountMessage(`Congratulations! You've applied a 100% discount with code ${coupon.code} for ${product!.name}.`);
     } else {
       setDownloadLink('');
       const isSpecialCode = product?.specialcode?.toLowerCase() === coupon.code.toLowerCase();
@@ -109,9 +96,7 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
       setDiscountMessage(
         `Congratulations! You've got a ${coupon.discount}% discount with ${
           isSpecialCode ? 'special code' : isScratchCoupon ? 'scratch coupon' : 'coupon'
-        } ${coupon.code}. Original price: PKR ${product!.originalPrice.toFixed(
-          2
-        )}, Final price: PKR ${newFinalPrice.toFixed(2)}. I want to buy ${product!.name}!`
+        } ${coupon.code}. Original price: PKR ${product!.originalPrice.toFixed(2)}, Final price: PKR ${newFinalPrice.toFixed(2)}. I want to buy ${product!.name}!`
       );
     }
 
@@ -157,219 +142,245 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
     };
 
     addToCart(cartItem);
-    // Trigger cart update event for header
     window.dispatchEvent(new CustomEvent('cartUpdated', { detail: getCart().length }));
   };
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-        <p className="text-red-500 text-lg text-center">{error}</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 px-4">
+        <p className="text-red-500 text-lg text-center font-medium">{error}</p>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+        <div className="animate-spin w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen pt-16 pb-12 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
+    <>
       <Confetti active={showConfetti} onComplete={() => setShowConfetti(false)} />
 
-      <div className="max-w-7xl mx-auto">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition-colors"
-        >
-          <ArrowLeft size={20} />
-          <span>Back to Products</span>
-        </button>
+      {/* FULL PAGE GRADIENT BACKGROUND */}
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-indigo-50/30 to-white dark:from-slate-950 dark:via-indigo-950/20 dark:to-slate-900 text-slate-900 dark:text-slate-100">
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-          <div className="space-y-6">
-            <div
-              className="relative w-full aspect-[4/3] bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl overflow-hidden cursor-pointer group"
-              onClick={() => setShowPreview(true)}
+        {/* HERO SECTION WITH IMAGE */}
+        <section className="relative pt-20 pb-12 px-4 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-500/5 dark:via-purple-500/5 dark:to-pink-500/5" />
+          <div className="absolute top-10 left-10 w-72 h-72 bg-indigo-400/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse delay-1000" />
+
+          <div className="max-w-7xl mx-auto relative z-10">
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium mb-6"
             >
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-full object-cover object-center"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling!.classList.remove('hidden');
-                }}
-              />
-              <div className="absolute inset-0 flex items-center justify-center text-white text-6xl sm:text-9xl font-bold opacity-20 hidden">
-                {product.name[0]}
-              </div>
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
-                  Click to preview
-                </span>
-              </div>
-            </div>
+              <ArrowLeft size={20} />
+              <span>Back to Products</span>
+            </button>
 
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
-              <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">Features</h3>
-              <ul className="space-y-3">
-                {product.features.map((feature, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <Check className="text-green-500 flex-shrink-0 mt-0.5" size={20} />
-                    <span className="text-gray-700 dark:text-gray-300">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div>
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-8 border border-gray-200 dark:border-gray-700 sticky top-16">
-              <div className="inline-block bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-full text-sm font-semibold mb-4">
-                {product.category}
-              </div>
-
-              <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-900 dark:text-white">{product.name}</h1>
-
-              <div className="flex items-center gap-4 mb-6">
-                <Rating rating={product.rating} size={20} readonly />
-                <span className="text-gray-600 dark:text-gray-400">
-                  {product.rating} ({product.reviews} reviews)
-                </span>
-              </div>
-
-              <p className="text-gray-600 dark:text-gray-400 mb-6">{product.description}</p>
-
-              <div className="mb-6">
-                <CountdownTimer endDate={product.offerEndsAt} />
-              </div>
-
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 sm:p-6 mb-6">
-                <div className="flex items-baseline gap-3 mb-4 flex-wrap">
-                  <span className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
-                    PKR {appliedCoupon ? finalPrice.toFixed(2) : product.price}
-                  </span>
-                  {product.originalPrice > product.price && (
-                    <span className="text-lg sm:text-xl text-gray-500 line-through">PKR {product.originalPrice}</span>
-                  )}
-                  {appliedCoupon && (
-                    <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">
-                      {appliedCoupon.discount}% OFF
-                    </span>
-                  )}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+              {/* IMAGE + PREVIEW */}
+              <div className="space-y-6">
+                <div
+                  className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 cursor-pointer group shadow-xl"
+                  onClick={() => setShowPreview(true)}
+                >
+                  <img
+                    src={product.image || '/images/placeholder.png'}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center text-8xl font-bold text-slate-300 dark:text-slate-700 hidden">
+                    {product.name[0]}
+                  </div>
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                    <div className="flex items-center gap-2 text-white opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
+                      <Eye size={24} />
+                      <span>Click to Preview</span>
+                    </div>
+                  </div>
                 </div>
 
-                {discountMessage && (
-                  <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <p className="text-sm font-semibold text-green-900 dark:text-green-300">{discountMessage}</p>
-                  </div>
-                )}
+                {/* FEATURES */}
+                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-lg">
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                    <Sparkles className="text-indigo-600 dark:text-indigo-400" size={22} />
+                    Key Features
+                  </h3>
+                  <ul className="space-y-3">
+                    {product.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <Check className="text-emerald-500 flex-shrink-0 mt-0.5" size={20} />
+                        <span className="text-slate-700 dark:text-slate-300">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
 
-                {!appliedCoupon && (
-                  <div className="space-y-3">
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <input
-                        type="text"
-                        value={couponCode}
-                        onChange={(e) => {
-                          setCouponCode(e.target.value);
-                          setCouponError('');
-                        }}
-                        placeholder="Enter coupon code"
-                        className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none w-full"
-                      />
-                      <button
-                        onClick={applyCoupon}
-                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors w-full sm:w-auto"
-                      >
-                        Apply
-                      </button>
+              {/* STICKY PURCHASE CARD */}
+              <div className="lg:sticky lg:top-24 lg:self-start">
+                <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-lg rounded-3xl p-6 lg:p-8 border border-slate-200 dark:border-slate-700 shadow-xl">
+                  <div className="inline-block bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 text-indigo-700 dark:text-indigo-400 px-4 py-1.5 rounded-full text-xs font-bold mb-4">
+                    {product.category}
+                  </div>
+
+                  <h1 className="text-3xl lg:text-4xl font-extrabold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+                    {product.name}
+                  </h1>
+
+                  <div className="flex items-center gap-3 mb-4">
+                    <Rating rating={product.rating} size={20} readonly />
+                    <span className="text-sm text-slate-500 dark:text-slate-400">
+                      {product.reviews} reviews
+                    </span>
+                  </div>
+
+                  <p className="text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
+                    {product.description}
+                  </p>
+
+                  <CountdownTimer endDate={product.offerEndsAt} />
+
+                  {/* PRICE CARD */}
+                  <div className="bg-gradient-to-r from-slate-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl p-6 mb-6 border border-slate-200 dark:border-slate-700">
+                    <div className="flex items-baseline gap-3 mb-3">
+                      <span className="text-4xl font-bold">
+                        PKR {appliedCoupon ? finalPrice.toFixed(2) : product.price.toLocaleString()}
+                      </span>
+                      {product.originalPrice > product.price && (
+                        <span className="text-lg text-slate-500 line-through">
+                          PKR {product.originalPrice.toLocaleString()}
+                        </span>
+                      )}
+                      {appliedCoupon && (
+                        <span className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
+                          {appliedCoupon.discount}% OFF
+                        </span>
+                      )}
                     </div>
-                    {couponError && <p className="text-red-500 text-sm">{couponError}</p>}
-                    {product.is_scratch && (
+
+                    {discountMessage && (
+                      <div className="mt-4 p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                        <p className="text-sm font-medium text-emerald-800 dark:text-emerald-300">{discountMessage}</p>
+                      </div>
+                    )}
+
+                    {!appliedCoupon && (
+                      <div className="space-y-3 mt-4">
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={couponCode}
+                            onChange={(e) => {
+                              setCouponCode(e.target.value);
+                              setCouponError('');
+                            }}
+                            placeholder="Enter coupon code"
+                            className="flex-1 px-4 py-3 rounded-xl bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm"
+                          />
+                          <button
+                            onClick={applyCoupon}
+                            className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all hover:scale-105 shadow-md"
+                          >
+                            Apply
+                          </button>
+                        </div>
+                        {couponError && <p className="text-red-500 text-sm">{couponError}</p>}
+                        {product.is_scratch && (
+                          <button
+                            onClick={() => setShowScratchCard(true)}
+                            className="w-full py-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white rounded-xl font-bold transition-all hover:scale-105 shadow-md flex items-center justify-center gap-2"
+                          >
+                            <Sparkles size={18} />
+                            Reveal Secret Discount
+                          </button>
+                        )}
+                      </div>
+                    )}
+
+                    {downloadLink && (
+                      <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                        <p className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">Your Download Link:</p>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={downloadLink}
+                            readOnly
+                            className="flex-1 px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-sm font-mono"
+                          />
+                          <button
+                            onClick={copyDownloadLink}
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2"
+                          >
+                            {copied ? <Check size={16} /> : <Copy size={16} />}
+                            {copied ? 'Copied!' : 'Copy'}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ACTION BUTTONS */}
+                  <div className="flex gap-3 mb-6">
+                    {(!appliedCoupon || appliedCoupon.discount < 100) && (
                       <button
-                        onClick={() => setShowScratchCard(true)}
-                        className="w-full py-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white rounded-lg font-semibold transition-colors"
+                        onClick={handleAddToCart}
+                        className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-lg"
                       >
-                        Reveal Secret Discount
+                        <ShoppingCart size={24} />
+                        Add to Cart
+                      </button>
+                    )}
+
+                    {!downloadLink && (!appliedCoupon || appliedCoupon.discount < 100) && (
+                      <button
+                        onClick={handleBuyNow}
+                        className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-lg"
+                      >
+                        <MessageCircle size={24} />
+                        Buy Now
+                      </button>
+                    )}
+
+                    {downloadLink && (
+                      <button
+                        onClick={handleBuyNow}
+                        className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-lg"
+                      >
+                        <MessageCircle size={24} />
+                        Get Free Download
                       </button>
                     )}
                   </div>
-                )}
 
-                {downloadLink && (
-                  <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <p className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">Download Link:</p>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <input
-                        type="text"
-                        value={downloadLink}
-                        readOnly
-                        className="flex-1 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-sm"
-                      />
-                      <button
-                        onClick={copyDownloadLink}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors flex items-center gap-2 justify-center"
-                      >
-                        {copied ? <Check size={16} /> : <Copy size={16} />}
-                        {copied ? 'Copied!' : 'Copy'}
-                      </button>
-                    </div>
+                  {/* RATING */}
+                  <div className="mb-6">
+                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Rate this product:</p>
+                    <Rating rating={userRating} size={28} onRate={handleRate} />
                   </div>
-                )}
+
+                  <ShareButtons url={window.location.href} title={product.name} />
+                </div>
               </div>
-
-              <div className="flex gap-3 mb-4">
-                {(!appliedCoupon || (appliedCoupon && appliedCoupon.discount < 100)) && (
-                  <button
-                    onClick={handleAddToCart}
-                    className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
-                  >
-                    <ShoppingCart size={24} />
-                    Add to Cart
-                  </button>
-                )}
-
-                {!downloadLink && appliedCoupon && appliedCoupon.discount === 100 && (
-                  <button
-                    onClick={handleBuyNow}
-                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
-                  >
-                    <MessageCircle size={24} />
-                    Get Free Download
-                  </button>
-                )}
-
-                {!downloadLink && (!appliedCoupon || (appliedCoupon && appliedCoupon.discount < 100)) && (
-                  <button
-                    onClick={handleBuyNow}
-                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg"
-                  >
-                    <MessageCircle size={24} />
-                    Buy Now
-                  </button>
-                )}
-              </div>
-
-              <div className="mb-6">
-                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Rate this product:</p>
-                <Rating rating={userRating} size={28} onRate={handleRate} />
-              </div>
-
-              <ShareButtons url={window.location.href} title={product.name} />
             </div>
           </div>
-        </div>
+        </section>
       </div>
 
+      {/* MODALS */}
       <Modal isOpen={showScratchCard} onClose={() => setShowScratchCard(false)} title="Reveal Your Discount">
-        <div className="flex flex-col items-center">
-          <p className="text-center mb-6 text-gray-600 dark:text-gray-400">
+        <div className="flex flex-col items-center p-6">
+          <p className="text-center mb-6 text-slate-600 dark:text-slate-400">
             Scratch the card below to reveal your exclusive discount!
           </p>
           <ScratchCard
@@ -379,25 +390,7 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
                 setShowScratchCard(false);
                 const coupon = product.scratch_coupon || `SCRATCH${product.scratch_disc}`;
                 setCouponCode(coupon);
-                setCouponError('');
-                // Auto apply the scratch coupon
-                const couponObj = COUPONS.find((c) => c.code.toLowerCase() === coupon.toLowerCase()) ||
-                  (product.specialcode?.toLowerCase() === coupon.toLowerCase() && product.specialdisc ? { code: product.specialcode, discount: product.specialdisc, type: 'percentage' } : null) ||
-                  (product.is_scratch && product.scratch_coupon?.toLowerCase() === coupon.toLowerCase() && product.scratch_disc ? { code: product.scratch_coupon, discount: product.scratch_disc, type: 'percentage' } : null);
-                if (couponObj && !appliedCoupon) {
-                  setAppliedCoupon(couponObj);
-                  const discount = couponObj.type === 'percentage' ? (product.price * couponObj.discount) / 100 : couponObj.discount;
-                  const newFinalPrice = product.price - discount;
-                  setFinalPrice(newFinalPrice);
-                  if (couponObj.discount === 100) {
-                    setDownloadLink(product.productlink);
-                    setDiscountMessage(`Congratulations! You've applied a 100% discount with code ${couponObj.code} for ${product.name}.`);
-                  } else {
-                    setDownloadLink('');
-                    setDiscountMessage(`Congratulations! You've got a ${couponObj.discount}% discount with scratch coupon ${couponObj.code}. Original price: PKR ${product.originalPrice.toFixed(2)}, Final price: PKR ${newFinalPrice.toFixed(2)}. I want to buy ${product.name}!`);
-                  }
-                  setShowConfetti(true);
-                }
+                applyCoupon();
               }, 1000);
             }}
           />
@@ -405,13 +398,20 @@ export const ProductDetailPage = ({ productId, onBack }: ProductDetailPageProps)
       </Modal>
 
       <Modal isOpen={showPreview} onClose={() => setShowPreview(false)} title="Product Preview">
-        <div className="h-64 sm:h-96 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-6xl sm:text-9xl font-bold">
-          {product.name[0]}
+        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-500 to-purple-600">
+          <img
+            src={product.image || '/images/placeholder.png'}
+            alt={product.name}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+            <p className="text-white text-6xl font-bold">{product.name[0]}</p>
+          </div>
         </div>
-        <p className="mt-4 text-center text-gray-600 dark:text-gray-400">
-          This is a preview of {product.name}
+        <p className="mt-4 text-center text-slate-600 dark:text-slate-400">
+          This is a preview of <span className="font-semibold">{product.name}</span>
         </p>
       </Modal>
-    </div>
+    </>
   );
 };

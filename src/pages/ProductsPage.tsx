@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Product } from '../types/product';
 import { Rating } from '../components/Rating';
-import { Filter, GitCompare, Search, X, Home } from 'lucide-react';
+import { Filter, GitCompare, Search, X, Home, Package } from 'lucide-react';
 import { addToComparison, getComparisonList } from '../utils/localStorage';
 
 interface ProductsPageProps {
@@ -13,14 +13,12 @@ export const ProductsPage = ({ onProductClick }: ProductsPageProps) => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [comparisonList, setComparisonList] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>(''); // New state for search query
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     fetch('/products.json')
       .then((res) => {
-        if (!res.ok) {
-          throw new Error('Failed to fetch products');
-        }
+        if (!res.ok) throw new Error('Failed to fetch products');
         return res.json();
       })
       .then((data: Product[]) => {
@@ -47,15 +45,14 @@ export const ProductsPage = ({ onProductClick }: ProductsPageProps) => {
   useEffect(() => {
     let filtered = products;
 
-    // Apply category filter
     if (selectedCategory !== 'All') {
       filtered = filtered.filter((p) => p.category === selectedCategory);
     }
 
-    // Apply search filter
     if (searchQuery.trim() !== '') {
       filtered = filtered.filter((p) =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase())
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -67,173 +64,226 @@ export const ProductsPage = ({ onProductClick }: ProductsPageProps) => {
   const handleAddToComparison = (productId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     const currentList = getComparisonList();
+    let updatedList: string[];
+
     if (currentList.includes(productId)) {
-      // Remove from comparison
-      const updatedList = currentList.filter((id) => id !== productId);
-      localStorage.setItem('digital_store_comparison', JSON.stringify(updatedList));
-      setComparisonList(updatedList);
-      window.dispatchEvent(new CustomEvent('comparisonUpdated', { detail: updatedList.length }));
+      updatedList = currentList.filter((id) => id !== productId);
     } else {
-      // Add to comparison
-      addToComparison(productId);
-      const updatedList = getComparisonList();
-      setComparisonList(updatedList);
-      window.dispatchEvent(new CustomEvent('comparisonUpdated', { detail: updatedList.length }));
+      if (currentList.length >= 4) return;
+      updatedList = [...currentList, productId];
     }
+
+    localStorage.setItem('digital_store_comparison', JSON.stringify(updatedList));
+    setComparisonList(updatedList);
+    window.dispatchEvent(new CustomEvent('comparisonUpdated', { detail: updatedList.length }));
   };
 
-  const handleClearSearch = () => {
-    setSearchQuery('');
-  };
+  const handleClearSearch = () => setSearchQuery('');
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <div className="flex items-center gap-4 mb-4">
+    /* FULL-PAGE GRADIENT + ANIMATED BLOBS */
+    <div className="relative min-h-screen bg-gradient-to-b from-slate-50 via-indigo-50/30 to-white dark:from-slate-950 dark:via-indigo-950/20 dark:to-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden">
+
+      {/* Animated Gradient Blobs – Full Page */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-10 left-10 w-72 h-72 bg-indigo-400/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink-400/10 rounded-full blur-3xl animate-pulse delay-500" />
+      </div>
+
+      {/* === HERO HEADER === */}
+      <section className="relative pt-24 pb-12 px-4 z-10">
+        <div className="max-w-7xl mx-auto">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-4 mb-6">
             <button
               onClick={() => window.location.href = '/'}
-              className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium"
             >
               <Home size={20} />
               <span>Home</span>
             </button>
+            <span className="text-slate-400">/</span>
+            <span className="font-semibold text-indigo-600 dark:text-indigo-400">All Products</span>
           </div>
-          <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">All Products</h1>
-          <p className="text-gray-600 dark:text-gray-400">Browse our complete collection of digital products</p>
-        </div>
 
-        {/* Search Bar */}
-        <div className="mb-6">
-          <div className="relative flex items-center gap-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 px-4 py-2">
-            <Search size={20} className="text-gray-500" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search products by name..."
-              className="flex-1 bg-transparent outline-none text-gray-900 dark:text-white"
-            />
-            {searchQuery && (
-              <button
-                onClick={handleClearSearch}
-                className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                title="Clear search"
-              >
-                <X size={20} />
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4 mb-8 overflow-x-auto pb-2">
-          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-            <Filter size={20} />
-            <span className="font-semibold">Filter:</span>
-          </div>
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all ${
-                selectedCategory === category
-                  ? 'bg-blue-600 text-white shadow-lg scale-105'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => {
-            const isInComparison = comparisonList.includes(product.id);
-
-            return (
-              <div
-                key={product.id}
-                className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all cursor-pointer hover:scale-[1.02]"
-                onClick={() => onProductClick(product.id)}
-              >
-                <div className="relative w-full aspect-[4/3] max-h-[200px] bg-white dark:bg-gray-700 overflow-hidden">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover object-center"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.nextElementSibling!.classList.remove('hidden');
-                    }}
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center text-white text-6xl font-bold opacity-20 hidden">
-                    {product.name[0]}
-                  </div>
-
-                  <button
-                    onClick={(e) => handleAddToComparison(product.id, e)}
-                    disabled={!isInComparison && comparisonList.length >= 4}
-                    className={`absolute top-3 left-3 p-2 rounded-lg transition-all ${
-                      isInComparison
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-white/90 hover:bg-white text-gray-700'
-                    }`}
-                    title={isInComparison ? 'Remove from comparison' : 'Add to comparison'}
-                  >
-                    <GitCompare size={18} />
-                  </button>
-
-                  {product.originalPrice > product.price && (
-                    <div className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
-                      SAVE {Math.round((1 - product.price / product.originalPrice) * 100)}%
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-5">
-                  <div className="inline-block bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-full text-xs font-semibold mb-3">
-                    {product.category}
-                  </div>
-
-                  <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    {product.name}
-                  </h3>
-
-                  <div className="flex items-center gap-2 mb-3">
-                    <Rating rating={product.rating} size={16} readonly />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      {product.rating} ({product.reviews})
-                    </span>
-                  </div>
-
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
-                    {product.description}
-                  </p>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-2xl font-bold text-gray-900 dark:text-white">PKR {product.price}</span>
-                      {product.originalPrice > product.price && (
-                        <span className="text-sm text-gray-500 line-through ml-2">PKR {product.originalPrice}</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-gray-500 dark:text-gray-400 text-lg">
-              {searchQuery
-                ? `No products found matching "${searchQuery}"`
-                : 'No products found in this category'}
+          {/* Title */}
+          <div className="text-center mb-10">
+            <h1 className="text-5xl sm:text-6xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+              All Products
+            </h1>
+            <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+              Explore our complete collection of premium digital tools
             </p>
           </div>
-        )}
-      </div>
+
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto mb-8">
+            <div className="relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-600 transition-colors" size={22} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by name or description..."
+                className="w-full pl-12 pr-12 py-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 transition-all outline-none text-lg shadow-sm"
+              />
+              {searchQuery && (
+                <button
+                  onClick={handleClearSearch}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                >
+                  <X size={22} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Sticky Filter Bar */}
+          <div className="sticky top-20 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-slate-200 dark:border-slate-700 py-4 -mx-4 px-4 mb-8 shadow-md">
+            <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                  <Filter size={20} />
+                  <span className="font-semibold">Filter by:</span>
+                </div>
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-5 py-2 rounded-full font-medium text-sm transition-all duration-300 whitespace-nowrap ${
+                      selectedCategory === category
+                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg scale-105'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+
+              {/* Comparison Counter */}
+              <div className="flex items-center gap-2">
+                <GitCompare size={20} className="text-slate-600 dark:text-slate-400" />
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                  {comparisonList.length > 0 ? (
+                    <span className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full text-xs font-bold">
+                      {comparisonList.length}
+                    </span>
+                  ) : (
+                    '0 items'
+                  )}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* === PRODUCT GRID === */}
+      <section className="relative px-4 pb-24 z-10">
+        <div className="max-w-7xl mx-auto">
+          {filteredProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {filteredProducts.map((product) => {
+                const isInComparison = comparisonList.includes(product.id);
+
+                return (
+                  <div
+                    key={product.id}
+                    onClick={() => onProductClick(product.id)}
+                    className="group bg-white dark:bg-slate-800 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-slate-100 to-slate-50 dark:from-slate-700 dark:to-slate-800">
+                      <img
+                        src={product.image || '/images/placeholder.png'}
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center text-6xl font-bold text-slate-300 dark:text-slate-600 hidden">
+                        {product.name[0]}
+                      </div>
+
+                      {/* Comparison Button */}
+                      <button
+                        onClick={(e) => handleAddToComparison(product.id, e)}
+                        disabled={!isInComparison && comparisonList.length >= 4}
+                        className={`absolute top-4 left-4 p-2.5 rounded-xl transition-all shadow-lg ${
+                          isInComparison
+                            ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white'
+                            : 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800'
+                        } ${!isInComparison && comparisonList.length >= 4 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        title={isInComparison ? 'Remove from comparison' : 'Add to comparison'}
+                      >
+                        <GitCompare size={18} />
+                      </button>
+
+                      {/* Discount Badge */}
+                      {product.originalPrice > product.price && (
+                        <div className="absolute top-4 right-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg animate-pulse">
+                          SAVE {Math.round((1 - product.price / product.originalPrice) * 100)}%
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="p-6 space-y-3">
+                      <div className="inline-block bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 text-indigo-700 dark:text-indigo-400 px-3 py-1 rounded-full text-xs font-bold">
+                        {product.category}
+                      </div>
+
+                      <h3 className="font-bold text-lg line-clamp-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        {product.name}
+                      </h3>
+
+                      <div className="flex items-center gap-2">
+                        <Rating rating={product.rating} size={16} readonly />
+                        <span className="text-sm text-slate-500 dark:text-slate-400">
+                          {product.reviews} reviews
+                        </span>
+                      </div>
+
+                      <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                        {product.description}
+                      </p>
+
+                      <div className="flex items-center justify-between pt-2">
+                        <div>
+                          <span className="text-2xl font-bold">PKR {product.price.toLocaleString()}</span>
+                          {product.originalPrice > product.price && (
+                            <span className="text-sm text-slate-500 line-through ml-2">
+                              PKR {product.originalPrice.toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+                        <Package className="text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" size={20} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            /* Empty State */
+            <div className="text-center py-24">
+              <div className="max-w-md mx-auto">
+                <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-full flex items-center justify-center">
+                  <Package size={48} className="text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <h3 className="text-2xl font-bold mb-2 text-slate-700 dark:text-slate-300">
+                  {searchQuery ? `No results for "${searchQuery}"` : 'No products in this category'}
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  {searchQuery ? 'Try adjusting your search terms' : 'Check back later for new additions!'}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 };
