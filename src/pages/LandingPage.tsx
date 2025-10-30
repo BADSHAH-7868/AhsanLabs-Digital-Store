@@ -167,7 +167,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
       </section>
 
       {/* === WHY CHOOSE US === */}
-      <section id = className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
+      <section id = "className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
