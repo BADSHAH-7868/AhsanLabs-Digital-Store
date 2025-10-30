@@ -243,7 +243,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
                 </div>
                 <div className="mt-6 text-center">
                   <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                    Join <span className="font-bold text-indigo-600 dark:text-indigo-400">10,000+</span> happy customers toda
+                    Join <span className="font-bold text-indigo-600 dark:text-indigo-400">10,000+</span> happy customers today
                   </p>
                 </div>
               </div>
