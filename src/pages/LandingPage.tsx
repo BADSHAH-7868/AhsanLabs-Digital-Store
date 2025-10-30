@@ -262,7 +262,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
               <h3 className="text-xl sm:text-2xl font-bold mb-4">Contact Information</h3>
               <div className="space-y-5">
                 {[
-                  { icon: Mail, label: 'Email', value: 'support@yourbrand.com', color: 'indigo' },
+                  { icon: Mail, label: 'Email', value: '', color: 'indigo' },
                   { icon: Phone, label: 'Phone', value: '+92 300 1234567', color: 'purple' },
                   { icon: MapPin, label: 'Location', value: 'Lahore, Pakistan', color: 'emerald' },
                 ].map((item, i) => (
