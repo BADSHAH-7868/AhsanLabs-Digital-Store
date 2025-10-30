@@ -264,7 +264,7 @@ export const LandingPage = ({ onProductClick, onViewProducts }: LandingPageProps
                 {[
                   { icon: Mail, label: 'Email', value: 'ahsanlabsstore@gmail.com', color: 'indigo' },
                   { icon: Phone, label: 'Phone', value: '+923343926359', color: 'purple' },
-                  { icon: MapPin, label: 'Location', value: 'Lahore, Pakistan', color: 'emerald' },
+                  { icon: MapPin, label: 'Location', value: 'Pakistan', color: 'emerald' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-4">
                     <div className={`w-11 h-11 bg-${item.color}-100 dark:bg-${item.color}-900/30 rounded-full flex items-center justify-center`}>
